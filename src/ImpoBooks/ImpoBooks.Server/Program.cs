@@ -1,9 +1,12 @@
 using ImpoBooks.DataAccess;
+using ImpoBooks.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSupabaseClient(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<GlobalExeptionHandler>();
+builder.Services.AddProblemDetails();
+builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -17,6 +20,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler();
 
 app.UseAuthorization();
 
