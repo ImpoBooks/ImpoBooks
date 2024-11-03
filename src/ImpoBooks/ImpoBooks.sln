@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.Server", "ImpoBooks.Server\ImpoBooks.Server.csproj", "{A9E46699-A111-49A6-81B0-4F1CC85F103F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.DataAccess", "ImpoBooks.DataAccess\ImpoBooks.DataAccess.csproj", "{943C2EFD-05F1-4AF7-BED9-71476246D7B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.BusinessLogic", "ImpoBooks.BusinessLogic\ImpoBooks.BusinessLogic.csproj", "{93BA0F01-67C3-45E5-A0B5-7587C4859E31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9E46699-A111-49A6-81B0-4F1CC85F103F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E46699-A111-49A6-81B0-4F1CC85F103F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E46699-A111-49A6-81B0-4F1CC85F103F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9E46699-A111-49A6-81B0-4F1CC85F103F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{943C2EFD-05F1-4AF7-BED9-71476246D7B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{943C2EFD-05F1-4AF7-BED9-71476246D7B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{943C2EFD-05F1-4AF7-BED9-71476246D7B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{943C2EFD-05F1-4AF7-BED9-71476246D7B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93BA0F01-67C3-45E5-A0B5-7587C4859E31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93BA0F01-67C3-45E5-A0B5-7587C4859E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93BA0F01-67C3-45E5-A0B5-7587C4859E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93BA0F01-67C3-45E5-A0B5-7587C4859E31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
