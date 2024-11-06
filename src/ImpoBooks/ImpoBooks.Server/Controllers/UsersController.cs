@@ -33,11 +33,13 @@ namespace ImpoBooks.Server.Controllers
         public async Task<IResult> Login([FromBody] LoginUserRequest loginUserRequest)
         {
             ErrorOr<string> result = await _usersService.GenerateJwtAsync(loginUserRequest.Email, loginUserRequest.Password);
+            string token = result.Value;
 
+            HttpContext.Response.Cookies.Append("necessary-cookies", token);
             return result.Match(
-                _ => Results.Ok(result.Value),
+                _ => Results.Ok(),
                 errors => Results.BadRequest(errors.First())
             );
-        }
+        } 
     }
 }
