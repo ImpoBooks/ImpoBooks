@@ -1,3 +1,4 @@
+using ErrorOr;
 using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess.Entities;
@@ -12,12 +13,18 @@ namespace ImpoBooks.Server.Controllers
     {
         private readonly IUsersService _usersService = usersService;
 
-        [HttpPost]
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IResult> Register([FromBody] CreateUserDto createUserDto)
         {
             User user = createUserDto.ToEntity();
-            await _usersService.CreateAsync(user);
-            return Results.Created();
+            ErrorOr<Success> result = await _usersService.CreateAsync(user);
+            
+            return result.Match(
+                _ => Results.Created(),
+                errors => Results.BadRequest(errors.First().Description)
+            );
         }
     }
 }

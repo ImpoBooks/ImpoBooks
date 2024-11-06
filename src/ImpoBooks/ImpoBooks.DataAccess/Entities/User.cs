@@ -3,6 +3,7 @@ using Supabase.Postgrest.Models;
 
 namespace ImpoBooks.DataAccess.Entities;
 
+[Table("Users")]
 public class User : BaseModel
 {
     [PrimaryKey("id", false)] public int Id { get; set; }

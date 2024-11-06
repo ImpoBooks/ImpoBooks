@@ -1,15 +1,19 @@
+using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess;
+using ImpoBooks.DataAccess.Repositories.Users;
 using ImpoBooks.Infrastructure;
 using ImpoBooks.Server.Middleware;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IUsersService, UsersService>();
+builder.Services.AddSingleton<IUsersRepository, UsersRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSupabaseClient(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExeptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddRouting(options => { options.LowercaseUrls = true; });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
