@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ImpoBooks.DataAccess\ImpoBooks.DataAccess.csproj" />
+      <ProjectReference Include="..\ImpoBooks.Infrastructure\ImpoBooks.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

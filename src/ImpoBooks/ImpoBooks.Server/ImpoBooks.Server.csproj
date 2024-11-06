@@ -14,7 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ImpoBooks.BusinessLogic\ImpoBooks.BusinessLogic.csproj" />
       <ProjectReference Include="..\ImpoBooks.DataAccess\ImpoBooks.DataAccess.csproj" />
+      <ProjectReference Include="..\ImpoBooks.Infrastructure\ImpoBooks.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
