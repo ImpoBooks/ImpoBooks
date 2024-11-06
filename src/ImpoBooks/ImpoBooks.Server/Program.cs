@@ -2,6 +2,7 @@ using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess;
 using ImpoBooks.DataAccess.Repositories.Users;
 using ImpoBooks.Infrastructure;
+using ImpoBooks.Infrastructure.Providers;
 using ImpoBooks.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IUsersService, UsersService>();
 builder.Services.AddSingleton<IUsersRepository, UsersRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSupabaseClient(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExeptionHandler>();
 builder.Services.AddProblemDetails();
