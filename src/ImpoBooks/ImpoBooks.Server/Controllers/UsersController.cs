@@ -28,7 +28,7 @@ namespace ImpoBooks.Server.Controllers
         }
         
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
         public async Task<IResult> Login([FromBody] LoginUserRequest loginUserRequest)
         {
