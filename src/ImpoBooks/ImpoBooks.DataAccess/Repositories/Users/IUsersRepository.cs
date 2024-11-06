@@ -6,5 +6,5 @@ public interface IUsersRepository
 {
     Task CreateAsync(User user);
     Task<User> GetByIdAsync(int id);
-    Task<User> GetBtEmailAsync(string email);
+    Task<User> GetByEmailAsync(string email);
 }
