@@ -15,7 +15,7 @@ namespace ImpoBooks.Server.Controllers
 
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<List<Error>>(StatusCodes.Status409Conflict)]
         public async Task<IResult> Register([FromBody] RegisterUserRequest registerUserRequest)
         {
             User user = registerUserRequest.ToEntity();
@@ -23,7 +23,7 @@ namespace ImpoBooks.Server.Controllers
             
             return result.Match(
                 _ => Results.Created(),
-                errors => Results.BadRequest(errors.First())
+                errors => Results.Conflict(errors.First())
             );
         }
         
