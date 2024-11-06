@@ -1,19 +1,19 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.Infrastructure;
-using ImpoBooks.Server.DTOs;
+using ImpoBooks.Server.Requests;
 
 namespace ImpoBooks.BusinessLogic.Extensions;
 
 public static class UserExtensions
 {
     private static readonly IPasswordHasher _passwordHasher = new PasswordHasher();
-    public static User ToEntity(this CreateUserDto dto)
+    public static User ToEntity(this RegisterUserRequest request)
     {
         return new User
         {
-            Email = dto.Email,
-            Name = dto.FullName,
-            HashedPassword = _passwordHasher.Generate(dto.Password)
+            Email = request.Email,
+            Name = request.FullName,
+            HashedPassword = _passwordHasher.Generate(request.Password)
         };
     }
 }

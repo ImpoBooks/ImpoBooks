@@ -2,7 +2,7 @@ using ErrorOr;
 using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess.Entities;
-using ImpoBooks.Server.DTOs;
+using ImpoBooks.Server.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImpoBooks.Server.Controllers
@@ -15,15 +15,28 @@ namespace ImpoBooks.Server.Controllers
 
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IResult> Register([FromBody] CreateUserDto createUserDto)
+        [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> Register([FromBody] RegisterUserRequest registerUserRequest)
         {
-            User user = createUserDto.ToEntity();
-            ErrorOr<Success> result = await _usersService.CreateAsync(user);
+            User user = registerUserRequest.ToEntity();
+            ErrorOr<Success> result = await _usersService.RegisterAsync(user);
             
             return result.Match(
                 _ => Results.Created(),
-                errors => Results.BadRequest(errors.First().Description)
+                errors => Results.BadRequest(errors.First())
+            );
+        }
+        
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> Login([FromBody] LoginUserRequest loginUserRequest)
+        {
+            ErrorOr<string> result = await _usersService.GenerateJwtAsync(loginUserRequest.Email, loginUserRequest.Password);
+
+            return result.Match(
+                _ => Results.Ok(result.Value),
+                errors => Results.BadRequest(errors.First())
             );
         }
     }
