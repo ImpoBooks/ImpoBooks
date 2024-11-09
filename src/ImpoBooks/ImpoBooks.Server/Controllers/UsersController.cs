@@ -20,26 +20,28 @@ namespace ImpoBooks.Server.Controllers
         {
             User user = registerUserRequest.ToEntity();
             ErrorOr<Success> result = await _usersService.RegisterAsync(user);
-            
+
             return result.Match(
                 _ => Results.Created(),
                 errors => Results.Conflict(errors.First())
             );
         }
-        
+
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
         public async Task<IResult> Login([FromBody] LoginUserRequest loginUserRequest)
         {
-            ErrorOr<string> result = await _usersService.GenerateJwtAsync(loginUserRequest.Email, loginUserRequest.Password);
+            ErrorOr<string> result =
+                await _usersService.GenerateJwtAsync(loginUserRequest.Email, loginUserRequest.Password);
             string token = result.Value;
 
-            HttpContext.Response.Cookies.Append("necessary-cookies", token);
+            if (token is not null) HttpContext.Response.Cookies.Append("necessary-cookies", token);
+
             return result.Match(
                 _ => Results.Ok(),
                 errors => Results.BadRequest(errors.First())
             );
-        } 
+        }
     }
 }

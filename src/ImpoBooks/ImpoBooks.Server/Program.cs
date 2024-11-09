@@ -21,13 +21,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
-    //Client (Frontend)
-    options.AddPolicy("ClientApp", policyBuilder =>
+    //Open CORS
+    options.AddPolicy("OpenCorsPolicy", policyBuilder =>
     {
-        policyBuilder.WithOrigins("http://localhost:3000");
+        policyBuilder.AllowAnyOrigin();
         policyBuilder.AllowAnyHeader();
         policyBuilder.AllowAnyMethod();
-        policyBuilder.AllowCredentials();
     });
 });
 
@@ -35,6 +34,11 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+
+app.UseRouting();
+
+app.UseCors("OpenCorsPolicy"); 
 
 app.UseHttpsRedirection();
 
