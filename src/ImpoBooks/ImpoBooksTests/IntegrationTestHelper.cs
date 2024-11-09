@@ -24,6 +24,7 @@ namespace ImpoBooksTests
 
 			return new Supabase.Client(configuration["TestSupabase:Url"], configuration["TestSupabase:Key"], options);
 		}
+
 		private static IConfiguration ConfigurationSetup()
 		{
 			string currentPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..");
@@ -49,5 +50,25 @@ namespace ImpoBooksTests
 				await client.From<T>().Insert(record);
 			}
 		}
+
+		public static async Task InitTable<T>(Client client, IEnumerable<T> preparedData) where T : BaseModelExtended, new()
+		{
+			foreach (T record in preparedData)
+			{
+				await client.From<T>().Insert(record);
+			}
+		}
+
+		public static async Task ClearTable<T>(Client client) where T : BaseModelExtended, new()
+		{
+			ModeledResponse<T> response = await client.From<T>().Get();
+			IEnumerable<T> allRecords = response.Models;
+
+			foreach (T record in allRecords)
+			{
+				await client.From<T>().Delete(record);
+			}
+		}
+
 	}
 }
