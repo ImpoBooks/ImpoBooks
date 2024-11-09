@@ -1,8 +1,11 @@
+using System.Security.Claims;
 using ErrorOr;
 using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.Server.Requests;
+using ImpoBooks.Server.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImpoBooks.Server.Controllers
@@ -40,6 +43,28 @@ namespace ImpoBooks.Server.Controllers
 
             return result.Match(
                 _ => Results.Ok(),
+                errors => Results.BadRequest(errors.First())
+            );
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        [ProducesResponseType<UserProfileResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> GetProfile()
+        {
+            UserProfileResponse userProfileResponse = new()
+            {
+                Id = User.FindFirst("id")?.Value,
+                Name = User.FindFirst("name")?.Value,
+                Email = User.FindFirst(ClaimTypes.Email)?.Value,
+            };
+
+            ErrorOr<Success> result = userProfileResponse.CheckPropertiesForNull();
+
+            return result.Match(
+                _ => Results.Ok(userProfileResponse),
                 errors => Results.BadRequest(errors.First())
             );
         }
