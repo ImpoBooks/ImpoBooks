@@ -13,14 +13,14 @@ namespace ImpoBooks.DataAccess.Entities
 	public class Person : BaseModelExtended
 	{
 		[Column("name")] public string Name { get; set; }
-		[Column("surname")] public string Surnmae { get; set; }
+		[Column("surname")] public string Surname { get; set; }
 
 		public override bool Equals(object obj)
 		{
 			return obj is Person person &&
 					Id == person.Id &&
 					Name == person.Name &&
-					Surnmae == person.Surnmae;
+					Surname == person.Surname;
 		}
 
 		public override int GetHashCode()

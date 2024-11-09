@@ -16,7 +16,7 @@ namespace ImpoBooks.DataAccess.Repositories
 
 		public async Task<IEnumerable<Person>> GetByFullNameAsync(string name, string surname)
 		{
-			ModeledResponse<Person> response = await _client.From<Person>().Where(x => x.Name == name && x.Surnmae == surname).Get();
+			ModeledResponse<Person> response = await _client.From<Person>().Where(x => x.Name == name && x.Surname == surname).Get();
 			IEnumerable<Person> person = response.Models;
 			return person;
 		}

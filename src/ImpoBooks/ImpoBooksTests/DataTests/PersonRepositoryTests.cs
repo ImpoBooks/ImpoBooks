@@ -1,19 +1,31 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
+using ImpoBooks.Tests.DataTests.Fixtures;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;
+using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace ImpoBooksTests.DataTests
 {
-	public class PersonRepositoryTests
-    {
-		private static readonly Client _client = IntegrationTestHelper.TestClientInit();
-		private static readonly PersonRepository _repository = new(_client);
+	public class PersonRepositoryTests : IClassFixture<PersonSupabaseFixture>
+	{
+		private static Client _client;
+		private static PersonRepository _repository;
+		private readonly PersonSupabaseFixture _fixture;
+		private IEnumerable<Person> _preparedPersons;
 
-		[Theory]
+		public PersonRepositoryTests(PersonSupabaseFixture fixture)
+        {
+			_fixture = fixture;
+			_client = fixture.client;
+			_repository = new(fixture.client);
+			_preparedPersons = fixture.PreparedPersons;
+		}
+
+        [Theory]
         [InlineData(1)]
 		[InlineData(2)]
 		[InlineData(3)]
@@ -27,7 +39,7 @@ namespace ImpoBooksTests.DataTests
 		public async Task GetByIdAsync_ReturnExpectedPerson(int Id)
         {
 			//Arrange
-			Person expected = PreparedPersons.FirstOrDefault(x => x.Id == Id)!;
+			Person expected = _preparedPersons.FirstOrDefault(x => x.Id == Id)!;
 
 			//Act
 			Person person = await _repository.GetByIdAsync(expected.Id);
@@ -37,13 +49,13 @@ namespace ImpoBooksTests.DataTests
 		}
 
 		[Theory]
-		[InlineData("Ольга", "Сидоренко")]
-		[InlineData("Ірина", "Петренко")]
-		[InlineData("Тайлер", "Дерден")]
+		[InlineData("Olha", "Sydenko")]
+		[InlineData("Iryna", "Petrenko")]
+		[InlineData("Tyler", "Durden")]
 		public async Task GetByFullNameAsync_ReturnExpectedPerson(string name, string surname)
 		{
 			//Arrange
-			IEnumerable<Person> expected = PreparedPersons.Where(x => x.Name == name && x.Surnmae == surname)!;
+			IEnumerable<Person> expected = _preparedPersons.Where(x => x.Name == name && x.Surname == surname)!;
 
 			//Act
 			IEnumerable<Person> person = await _repository.GetByFullNameAsync(name, surname);
@@ -56,7 +68,7 @@ namespace ImpoBooksTests.DataTests
 		public async Task GetAllAsync_ReturnExpectedPersonsAmount()
 		{
 			//Arrange
-			int expected = PreparedPersons.Count();
+			int expected = _preparedPersons.Count();
 
 			//Act
 			IEnumerable<Person> persons = await _repository.GetAllAsync();
@@ -69,7 +81,7 @@ namespace ImpoBooksTests.DataTests
 		public async Task GetAllAsync_ReturnExpectedPersonsContent()
 		{
 			//Arrange
-			IEnumerable<Person> expected = PreparedPersons;
+			IEnumerable<Person> expected = _preparedPersons;
 
 			//Act
 			IEnumerable<Person> persons = await _repository.GetAllAsync();
@@ -95,7 +107,7 @@ namespace ImpoBooksTests.DataTests
 			//Assert
 			Assert.Equal(expected, actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, PreparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 		}
 
 		[Theory]
@@ -115,7 +127,7 @@ namespace ImpoBooksTests.DataTests
 			//Assert
 			Assert.Equal(expected, actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, PreparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 		}
 
 		[Theory]
@@ -126,7 +138,7 @@ namespace ImpoBooksTests.DataTests
 		public async Task DeleteAsync_RemovePersonFromDb(int caseId)
 		{
 			//Arrange
-			Person person = PreparedPersons.FirstOrDefault(x => x.Id == caseId)!;
+			Person person = _preparedPersons.FirstOrDefault(x => x.Id == caseId)!;
 
 			//Act
 			await _repository.DeleteAsync(person);
@@ -135,7 +147,7 @@ namespace ImpoBooksTests.DataTests
 			//Assert
 			Assert.Null(actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, PreparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 		}
 
 		[Theory]
@@ -154,40 +166,25 @@ namespace ImpoBooksTests.DataTests
 			//Assert
 			Assert.Null(actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, PreparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 		}
-
-		private IEnumerable<Person> PreparedPersons =>
-            new Person[] 
-            { 
-                new() { Id = 1, Name = "Олександр", Surnmae = "Шевченко"},
-                new() { Id = 2, Name = "Дмитро", Surnmae = "Ковальчук"},
-				new() { Id = 3, Name = "Андрій", Surnmae = "Гриценко"},
-				new() { Id = 4, Name = "Володимир", Surnmae = "Ткаченко"},
-				new() { Id = 5, Name = "Катерина", Surnmae = "Мороз"},
-				new() { Id = 6, Name = "Ольга", Surnmae = "Сидоренко"},
-				new() { Id = 7, Name = "Ірина", Surnmae = "Петренко"},
-				new() { Id = 8, Name = "Джо", Surnmae = "Байден"},
-				new() { Id = 9, Name = "Федір", Surnmae = "Денчик"},
-				new() { Id = 10, Name = "Тайлер", Surnmae = "Дерден"}
-			};
 
 		private IEnumerable<Person> NewPersons =>
 			new Person[]
 			{
-				new() { Id = 11, Name = "Тарас", Surnmae = "Шевченко"},
-				new() { Id = 12, Name = "Іван", Surnmae = "Франко"},
-				new() { Id = 13, Name = "Леся", Surnmae = "Українка"},
-				new() { Id = 14, Name = "Олег", Surnmae = "Вінник"}
+				new() { Id = 11, Name = "Taras", Surname = "Shevchenko"},
+				new() { Id = 12, Name = "Ivan", Surname = "Franko"},
+				new() { Id = 13, Name = "Lesya", Surname = "Ukrainka"},
+				new() { Id = 14, Name = "Oleh", Surname = "Vynnyk"}
 			};
 
 		private IEnumerable<Person> UpdatedPersons => 
 			new Person[] 
 			{
-				new() { Id = 5, Name = "Василь", Surnmae = "Стус"},
-				new() { Id = 7, Name = "Іван", Surnmae = "Франко"},
-				new() { Id = 1, Name = "Павло", Surnmae = "Тичина"},
-				new() { Id = 9, Name = "Олесь ", Surnmae = "Гончар"}
+				new() { Id = 5, Name = "Vasyl", Surname = "Stus"},
+				new() { Id = 7, Name = "Ivan", Surname = "Franko"},
+				new() { Id = 1, Name = "Pavlo", Surname = "Tychyna"},
+				new() { Id = 9, Name = "Oles", Surname = "Honchar"}
 			};
 	}
 }
