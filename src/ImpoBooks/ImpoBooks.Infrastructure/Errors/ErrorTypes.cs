@@ -6,4 +6,5 @@ public static class ErrorTypes
     public const int IsNull = 2;
     public const int NotFound = 3;
     public const int WrongInfo = 4;
+    public const int NullProperties = 5;
 }
