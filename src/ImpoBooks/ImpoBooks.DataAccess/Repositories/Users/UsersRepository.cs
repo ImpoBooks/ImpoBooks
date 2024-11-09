@@ -8,7 +8,7 @@ public class UsersRepository(Client client) : IUsersRepository
 {
     private readonly Client _client = client;
 
-    public async Task CreateAsync(User user) => await _client.From<User>().Insert(user);
+    public async Task CreateAsync(User? user) => await _client.From<User>().Insert(user);
 
     public async Task<User> GetByIdAsync(int id) 
     {

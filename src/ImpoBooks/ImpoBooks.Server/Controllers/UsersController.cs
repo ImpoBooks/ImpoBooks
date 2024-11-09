@@ -3,6 +3,7 @@ using ErrorOr;
 using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess.Entities;
+using ImpoBooks.Server.Extensions;
 using ImpoBooks.Server.Requests;
 using ImpoBooks.Server.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace ImpoBooks.Server.Controllers
         [ProducesResponseType<List<Error>>(StatusCodes.Status409Conflict)]
         public async Task<IResult> Register([FromBody] RegisterUserRequest registerUserRequest)
         {
-            User user = registerUserRequest.ToEntity();
+            User? user = registerUserRequest.ToEntity();
             ErrorOr<Success> result = await _usersService.RegisterAsync(user);
 
             return result.Match(
@@ -52,7 +53,7 @@ namespace ImpoBooks.Server.Controllers
         [ProducesResponseType<UserProfileResponse>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
-        public async Task<IResult> GetProfile()
+        public IResult GetProfile()
         {
             UserProfileResponse userProfileResponse = new()
             {

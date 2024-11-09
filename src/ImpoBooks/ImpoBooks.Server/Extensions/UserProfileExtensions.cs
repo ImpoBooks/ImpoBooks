@@ -3,7 +3,7 @@ using ErrorOr;
 using ImpoBooks.BusinessLogic.Errors.Users;
 using ImpoBooks.Server.Responses;
 
-namespace ImpoBooks.BusinessLogic.Extensions;
+namespace ImpoBooks.Server.Extensions;
 
 public static class UserProfileExtensions
 {
