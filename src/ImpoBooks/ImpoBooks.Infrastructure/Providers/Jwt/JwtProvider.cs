@@ -13,7 +13,7 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
 
     public string GenerateToken(User user)
     {
-        Claim[] claims = [new Claim("userId", user.Id.ToString()), new Claim("email", user.Email)]; 
+        Claim[] claims = [new Claim("id", user.Id.ToString()), new Claim("email", user.Email), new Claim("name", user.Name)]; 
         
         SigningCredentials signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(
