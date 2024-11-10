@@ -11,7 +11,7 @@ public static class UserExtensions
 {
     private static readonly IPasswordHasher _passwordHasher = new PasswordHasher();
 
-    public static User ToEntity(this RegisterUserRequest request)
+    public static User? ToEntity(this RegisterUserRequest request)
     {
         return new User
         {

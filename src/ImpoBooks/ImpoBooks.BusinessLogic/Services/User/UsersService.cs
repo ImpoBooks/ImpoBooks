@@ -15,9 +15,8 @@ public class UsersService(
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
-    private readonly IJwtProvider _jwtProvider = jwtProvider;
 
-    public async Task<ErrorOr<Success>> RegisterAsync(User user)
+    public async Task<ErrorOr<Success>> RegisterAsync(User? user)
     {
         if (user is null)
             return UserErrors.IsNull;

@@ -1,3 +1,4 @@
+using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess;
 using ImpoBooks.DataAccess.Repositories.Users;
@@ -13,12 +14,14 @@ builder.Services.AddSingleton<IUsersRepository, UsersRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSupabaseClient(builder.Configuration);
+builder.Services.AddApiAuthentication(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExeptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddRouting(options => { options.LowercaseUrls = true; });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(options =>
 {
     //Open CORS
