@@ -27,9 +27,10 @@ builder.Services.AddCors(options =>
     //Open CORS
     options.AddPolicy("OpenCorsPolicy", policyBuilder =>
     {
-        policyBuilder.AllowAnyOrigin();
+        policyBuilder.SetIsOriginAllowed(x => true);
         policyBuilder.AllowAnyHeader();
         policyBuilder.AllowAnyMethod();
+        policyBuilder.AllowCredentials();
     });
 });
 
@@ -41,15 +42,9 @@ app.UseSwaggerUI();
 
 app.UseRouting();
 
-app.UseCors("OpenCorsPolicy"); 
+app.UseCors("OpenCorsPolicy");
 
 app.UseHttpsRedirection();
-
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    Secure = CookieSecurePolicy.Always,
-    HttpOnly = HttpOnlyPolicy.Always,
-});
 
 app.UseExceptionHandler();
 

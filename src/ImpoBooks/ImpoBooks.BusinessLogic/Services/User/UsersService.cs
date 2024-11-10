@@ -4,6 +4,7 @@ using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories.Users;
 using ImpoBooks.Infrastructure;
 using ImpoBooks.Infrastructure.Providers;
+using Microsoft.AspNetCore.Http;
 
 namespace ImpoBooks.BusinessLogic.Services;
 

@@ -40,7 +40,14 @@ namespace ImpoBooks.Server.Controllers
                 await _usersService.GenerateJwtAsync(loginUserRequest.Email, loginUserRequest.Password);
             string token = result.Value;
 
-            if (token is not null) HttpContext.Response.Cookies.Append("necessary-cookies", token);
+            if (token is not null)
+                HttpContext.Response.Cookies.Append("necessary-cookies", token,
+                    new CookieOptions()
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None
+                    });
 
             return result.Match(
                 _ => Results.Ok(),

@@ -39,7 +39,9 @@ public static class UserExtensions
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["necessary-cookies"];
+                        var token = context.Request.Cookies["necessary-cookies"];
+                        if (!string.IsNullOrEmpty(token)) context.Token = token;
+
                         return Task.CompletedTask;
                     }
                 };
