@@ -10,16 +10,15 @@ using Xunit.Sdk;
 
 namespace ImpoBooksTests.DataTests
 {
+    [Collection("Data Tests Collection")]
 	public class PersonRepositoryTests : IClassFixture<PersonSupabaseFixture>
 	{
-		private static Client _client;
-		private static PersonRepository _repository;
-		private readonly PersonSupabaseFixture _fixture;
+		private readonly Client _client;
+		private readonly PersonRepository _repository;
 		private IEnumerable<Person> _preparedPersons;
 
 		public PersonRepositoryTests(PersonSupabaseFixture fixture)
         {
-			_fixture = fixture;
 			_client = fixture.client;
 			_repository = new(fixture.client);
 			_preparedPersons = fixture.PreparedPersons;
