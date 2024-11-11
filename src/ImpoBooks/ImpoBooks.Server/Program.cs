@@ -1,7 +1,8 @@
 using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.DataAccess;
-using ImpoBooks.DataAccess.Repositories.Users;
+using ImpoBooks.DataAccess.Interfaces;
+using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Infrastructure;
 using ImpoBooks.Infrastructure.Providers;
 using ImpoBooks.Server.Middleware;

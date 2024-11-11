@@ -1,7 +1,7 @@
 using ErrorOr;
 using ImpoBooks.BusinessLogic.Errors.Users;
 using ImpoBooks.DataAccess.Entities;
-using ImpoBooks.DataAccess.Repositories.Users;
+using ImpoBooks.DataAccess.Interfaces;
 using ImpoBooks.Infrastructure;
 using ImpoBooks.Infrastructure.Providers;
 using Microsoft.AspNetCore.Http;
