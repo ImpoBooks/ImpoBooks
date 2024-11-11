@@ -1,4 +1,5 @@
 ﻿using ImpoBooks.DataAccess.Entities;
+using ImpoBooks.DataAccess.Entities.AutoIncremented;
 using ImpoBooks.DataAccess.Interfaces;
 using Supabase;
 using Supabase.Postgrest.Responses;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.DataAccess.Repositories
 {
-	public class PersonRepository(Client client) : Repository<Person>(client), IPersonRepository
+	public class PersonRepository(Client client) : Repository<Person, AutoIncPerson>(client), IPersonRepository
 	{
 		private readonly Client _client = client;
 

@@ -1,4 +1,5 @@
 ﻿using ImpoBooks.DataAccess.Entities;
+using ImpoBooks.DataAccess.Entities.AutoIncremented;
 using ImpoBooks.DataAccess.Interfaces;
 using Supabase;
 using Supabase.Postgrest.Responses;
@@ -11,7 +12,7 @@ using static Supabase.Postgrest.Constants;
 
 namespace ImpoBooks.DataAccess.Repositories
 {
-	public class GenreRepository(Client client) : Repository<Genre>(client), IGenreRepository
+	public class GenreRepository(Client client) : Repository<Genre, AutoIncGenre>(client), IGenreRepository
 	{
 		private readonly Client _client = client;
 

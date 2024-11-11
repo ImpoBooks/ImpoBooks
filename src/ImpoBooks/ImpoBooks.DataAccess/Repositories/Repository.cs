@@ -1,4 +1,5 @@
 ﻿using ImpoBooks.DataAccess.Entities;
+using ImpoBooks.DataAccess.Entities.AutoIncremented;
 using ImpoBooks.DataAccess.Interfaces;
 using Supabase;
 using Supabase.Postgrest.Models;
@@ -11,12 +12,21 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.DataAccess.Repositories
 {
-	public class Repository<T>(Client client) : IRepository<T> where T : BaseModelExtended, new()
+	public class Repository<T, T1>(Client client) : IRepository<T> where T : BaseModelExtended, IAutoInc<T1>, new() 
+																   where T1 : BaseModelAutoIncExtended, new()
 	{
 		private readonly Client _client = client;
-		public async Task CreateAsync(T entity) =>
+
+		public virtual async Task CreateAsync(T entity)
+		{
+			if (entity.Id is 0)
+			{
+				await _client.From<T1>().Insert(entity.ToAutoInc());
+				return;
+			}
 			await _client.From<T>().Insert(entity);
-	
+		}
+
 		public virtual async Task<T> GetByIdAsync(int id)
 		{
 			ModeledResponse<T> response = await _client.From<T>().Where(x => x.Id == id).Get();
