@@ -1,4 +1,6 @@
-﻿using Supabase.Postgrest.Attributes;
+﻿using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 using System;
 using System.Collections.Generic;
@@ -12,13 +14,15 @@ namespace ImpoBooks.DataAccess.Entities
 	public class Publisher : BaseModelExtended
 	{
 		[Column("name")] public string Name { get; set; }
-		//[Reference(typeof(Book))] public ICollection<Book> Books { get; set; }
+		[Column("books")] public ICollection<Book>? Books { get; set; }
 
 		public override bool Equals(object obj)
 		{
 			return obj is Publisher publisher &&
 			Id == publisher.Id &&
-			Name == publisher.Name;
+			Name == publisher.Name &&
+			(Books?.Count == publisher.Books?.Count ||
+			Books.IsNullOrEmpty() == publisher.Books?.IsNullOrEmpty());
 		}
 
 		public override int GetHashCode()

@@ -17,13 +17,13 @@ namespace ImpoBooks.DataAccess.Repositories
 		public async Task CreateAsync(T entity) =>
 			await _client.From<T>().Insert(entity);
 	
-		public async Task<T> GetByIdAsync(int id)
+		public virtual async Task<T> GetByIdAsync(int id)
 		{
 			ModeledResponse<T> response = await _client.From<T>().Where(x => x.Id == id).Get();
 			T entity = response.Model;
 			return entity;
 		}
-		public async Task<IEnumerable<T>> GetAllAsync()
+		public virtual async Task<IEnumerable<T>> GetAllAsync()
 		{
 			ModeledResponse<T> response = await _client.From<T>().Get();
 			IEnumerable<T> entity = response.Models;
