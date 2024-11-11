@@ -1,4 +1,5 @@
-﻿using Supabase.Postgrest.Attributes;
+﻿using Microsoft.IdentityModel.Tokens;
+using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,7 @@ namespace ImpoBooks.DataAccess.Entities
 	{
 		[Column("person_id")] public int PersonId { get; set; }
 		[Reference(typeof(Person))] public Person Person { get; set; }
-
-		//[Reference(typeof(Book))] public ICollection<Book> Books { get; set; }
+		[Column("books")] public ICollection<Book>? Books { get; set; }
 
 		public override bool Equals(object obj)
 		{
@@ -24,7 +24,9 @@ namespace ImpoBooks.DataAccess.Entities
 			PersonId == author.PersonId &&
 			Person.Id == author.Person.Id &&
 			Person.Name == author.Person.Name &&
-			Person.Surname == author.Person.Surname;
+			Person.Surname == author.Person.Surname &&
+			(Books?.Count == author.Books?.Count ||
+			Books.IsNullOrEmpty() == author.Books?.IsNullOrEmpty());
 		}
 
 		public override int GetHashCode()

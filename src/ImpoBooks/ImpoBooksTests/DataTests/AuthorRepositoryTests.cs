@@ -18,8 +18,11 @@ namespace ImpoBooks.Tests.DataTests
 		private readonly Client _client;
 		private readonly AuthorRepository _repositoryA;
 		private readonly PersonRepository _repositoryP;
-		private IEnumerable<Author> _preparedAuthors;
 		private IEnumerable<Person> _preparedPersons;
+		private IEnumerable<Author> _preparedAuthors;
+		private IEnumerable<Genre> _preparedGenres;
+		private IEnumerable<Publisher> _preparedPublishers;
+		private IEnumerable<Book> _preparedBooks;
 
 
 		public AuthorRepositoryTests(AuthorSupabaseFixture fixture)
@@ -27,6 +30,9 @@ namespace ImpoBooks.Tests.DataTests
 			_client = fixture.client;
 			_repositoryA = new(fixture.client);
 			_repositoryP = new(fixture.client);
+			_preparedBooks = fixture.PrepearedBooks;
+			_preparedGenres = fixture.PrepearedGenres;
+			_preparedPublishers = fixture.PrepearedPublishers;
 			_preparedPersons = fixture.PrepearedPersons;
 			_preparedAuthors = fixture.PrepearedAuthors
 				.Select(x => new Author()
@@ -47,6 +53,7 @@ namespace ImpoBooks.Tests.DataTests
 		{
 			//Arrange
 			Author expected = _preparedAuthors.FirstOrDefault(x => x.Id == Id)!;
+			expected.Books = _preparedBooks.Where(x => x.AuthorId == Id).ToList();
 
 			//Act
 			Author author = await _repositoryA.GetByIdAsync(expected.Id);
@@ -74,6 +81,13 @@ namespace ImpoBooks.Tests.DataTests
 		{
 			//Arrange
 			IEnumerable<Author> expected = _preparedAuthors;
+			expected = expected.Select(x => new Author()
+			{
+				Id = x.Id,
+				PersonId = x.PersonId,
+				Person = x.Person,
+				Books = _preparedBooks.Where(b => b.AuthorId == x.Id).ToList()
+			});
 
 			//Act
 			IEnumerable<Author> author = await _repositoryA.GetAllAsync();
@@ -90,6 +104,7 @@ namespace ImpoBooks.Tests.DataTests
 		{
 			//Arrange
 			Author expected = _preparedAuthors.First(x => x.Person.Name == name && x.Person.Surname == surname);
+			expected.Books = _preparedBooks.Where(x => x.AuthorId == expected.Id).ToList();
 
 			//Act
 			Author author = await _repositoryA.GetByFullNameAsync(name, surname);
@@ -117,8 +132,11 @@ namespace ImpoBooks.Tests.DataTests
 			//Assert
 			Assert.Equal(expectedA, actualAuthor);
 
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
 		}
 
 		[Theory]
@@ -133,12 +151,17 @@ namespace ImpoBooks.Tests.DataTests
 
 			//Act
 			await _repositoryA.UpdateAsync(expected);
+			expected.Books = _preparedBooks.Where(x => x.AuthorId == expected.Id).ToList();
 			Author actualAuthor = await _repositoryA.GetByIdAsync(caseId);
 
 			//Assert
 			Assert.Equal(expected, actualAuthor);
 
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
 		}
 
 		[Theory]
@@ -157,7 +180,11 @@ namespace ImpoBooks.Tests.DataTests
 			//Assert
 			Assert.Null(actualAuthor);
 
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
 		}
 
 		[Theory]
@@ -175,7 +202,11 @@ namespace ImpoBooks.Tests.DataTests
 			//Assert
 			Assert.Null(actualAuthor);
 
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
 		}
 
 

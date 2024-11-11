@@ -24,7 +24,38 @@ namespace ImpoBooks.DataAccess.Repositories
 				.Get();
 
 			Author author = response.Model;
+			if (author is null) return author;
+
+			ModeledResponse<Book> responseB = await _client.From<Book>().Where(x => x.AuthorId == author.Id).Get();
+			author.Books = responseB.Models;
+
 			return author;
+		}
+
+		public override async Task<Author> GetByIdAsync(int id)
+		{
+			ModeledResponse<Author> responseP = await _client.From<Author>().Where(x => x.Id == id).Get();
+			Author author = responseP.Model;
+			if (author is null) return author;
+
+			ModeledResponse<Book> responseB = await _client.From<Book>().Where(x => x.AuthorId == author.Id).Get();
+			author.Books = responseB.Models;
+
+			return author;
+		}
+
+		public override async Task<IEnumerable<Author>> GetAllAsync()
+		{
+			ModeledResponse<Author> response = await _client.From<Author>().Get();
+			IEnumerable<Author> authors = response.Models;
+
+			foreach (Author author in authors)
+			{
+				ModeledResponse<Book> responseB = await _client.From<Book>().Where(x => x.AuthorId == author.Id).Get();
+				author.Books = responseB.Models;
+			}
+
+			return authors;
 		}
 	}
 }
