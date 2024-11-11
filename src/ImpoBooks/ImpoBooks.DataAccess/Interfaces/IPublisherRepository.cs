@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.DataAccess.Interfaces
 {
-	internal interface IPublisherRepository : IRepository<Publisher>
+	public interface IPublisherRepository : IRepository<Publisher>
 	{
 		Task<Publisher> GetByNameAsync(string name);
 	}

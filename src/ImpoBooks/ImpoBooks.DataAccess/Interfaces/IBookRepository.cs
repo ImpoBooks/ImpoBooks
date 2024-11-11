@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.DataAccess.Interfaces
 {
-	internal interface IBookRepository : IRepository<Book>
+	public interface IBookRepository : IRepository<Book>
 	{
 		Task<Book> GetByNameAsync(string name);
 		Task<IEnumerable<Book>> GetByReleasDateAsync(DateTime releasDate);

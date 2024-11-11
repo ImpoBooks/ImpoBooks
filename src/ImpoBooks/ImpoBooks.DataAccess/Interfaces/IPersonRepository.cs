@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.DataAccess.Interfaces
 {
-	internal interface IPersonRepository : IRepository<Person>
+	public interface IPersonRepository : IRepository<Person>
 	{
 		Task<IEnumerable<Person>> GetByFullNameAsync(string name, string surname);
 	}
