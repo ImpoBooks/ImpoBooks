@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using ImpoBooks.DataAccess.Entities.AutoIncremented;
+using ImpoBooks.DataAccess.Interfaces;
+using Newtonsoft.Json;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 using System;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 namespace ImpoBooks.DataAccess.Entities
 {
 	[Table("Books")]
-	public class Book : BaseModelExtended
+	public class Book : BaseModelExtended, IAutoInc<AutoIncBook>
 	{
 		[Column("name")] public string Name { get; set; }
 		[Column("publisher_id")] public int PublisherId { get; set; }
@@ -44,6 +46,25 @@ namespace ImpoBooks.DataAccess.Entities
 		public override int GetHashCode()
 		{
 			return HashCode.Combine(Id);
+		}
+
+		public AutoIncBook ToAutoInc()
+		{
+			return new AutoIncBook()
+			{
+				Id = Id,
+				Name = Name,
+				PublisherId = PublisherId,
+				AuthorId = AuthorId,
+				Description = Description,
+				ReleaseDate = ReleaseDate,
+				Price = Price,
+				Rating = Rating,
+				Format = Format,
+				Publisher = Publisher,
+				Author = Author,
+				Genres = Genres
+			};
 		}
 	}
 }
