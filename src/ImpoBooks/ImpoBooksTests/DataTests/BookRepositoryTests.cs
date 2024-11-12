@@ -141,18 +141,17 @@ namespace ImpoBooksTests.DataTests
 		}
 
 		[Theory]
-		[InlineData("12.07.1998")]
-		[InlineData("18.03.2003")]
-		[InlineData("02.05.2021")]
+		[InlineData("1998.07.12")]
+		[InlineData("2003.03.18")]
+		[InlineData("2021.05.2")]
 		public async Task GetByReleasDateAsync_ReturnExpectedBooks(string releaseDate)
 		{
 			//Arrange
-			DateTime date = DateTime.ParseExact(releaseDate, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
-			IEnumerable<Book> expected = _preparedBooks.Where(x => x.ReleaseDate == date)!;
+			IEnumerable<Book> expected = _preparedBooks.Where(x => x.ReleaseDate == releaseDate)!;
 			expected = expected.Select(x => AddGenres(x));
 
 			//Act
-			IEnumerable<Book> books = await _repository.GetByReleasDateAsync(date.AddDays(-1));
+			IEnumerable<Book> books = await _repository.GetByReleasDateAsync(releaseDate);
 
 			//Assert
 			Assert.Equal(expected, books);
@@ -328,7 +327,7 @@ namespace ImpoBooksTests.DataTests
 					Id = 6,
 					Name = "Influence: The Psychology of Persuasion",
 					Description = "Fundamentals of psychology for persuasion and interaction with others",
-					ReleaseDate = new DateTime(2010, 01, 10),
+					ReleaseDate = "2010.01.10",
 					Rating = 4.4M,
 					Format = "Electronic",
 					Price = 12.99M,
@@ -342,7 +341,7 @@ namespace ImpoBooksTests.DataTests
 					Id = 7,
 					Name = "The Night Circus",
 					Description = "A magical novel about a mysterious circus that appears only at night",
-					ReleaseDate = new DateTime(2011, 09, 13),
+					ReleaseDate = "2011.09.13",
 					Rating = 4.5M,
 					Format = "Electronic",
 					Price = 17.99M,
@@ -356,7 +355,7 @@ namespace ImpoBooksTests.DataTests
 					Id = 8,
 					Name = "The Time Catchers",
 					Description = "A fantasy novel series where heroes travel through time",
-					ReleaseDate = new DateTime(2014, 04, 23),
+					ReleaseDate = "2014.04.23",
 					Rating = 4.6M,
 					Format = "Print",
 					Price = 21.99M,
@@ -375,7 +374,7 @@ namespace ImpoBooksTests.DataTests
 					Id = 3,
 					Name = "The Da Vinci Code",
 					Description = "Puzzles, ancient symbols, and intrigue unfolding in the heart of the religious world",
-					ReleaseDate = new DateTime(2001, 02, 27),
+					ReleaseDate = "2001.02.27",
 					Rating = 4.4M,
 					Format = "Electronic",
 					Price = 38.99M,
@@ -389,7 +388,7 @@ namespace ImpoBooksTests.DataTests
 					Id = 4,
 					Name = "The Picture of Dorian Gray",
 					Description = "A moral tale about a young man obsessed with his beauty",
-					ReleaseDate = new DateTime(1998, 07, 12),
+					ReleaseDate = "1998.07.12",
 					Rating = 4.7M,
 					Format = "Print",
 					Price = 21.99M,
@@ -403,7 +402,7 @@ namespace ImpoBooksTests.DataTests
 					Id = 5,
 					Name = "The Hobbit",
 					Description = "The adventures of Bilbo Baggins in the fantastic world of Middle-earth",
-					ReleaseDate = new DateTime(1937, 09, 21),
+					ReleaseDate = "1937.09.21",
 					Rating = 4.9M,
 					Format = "Print",
 					Price = 27.99M,

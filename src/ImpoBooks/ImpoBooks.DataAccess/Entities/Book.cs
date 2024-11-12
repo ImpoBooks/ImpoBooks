@@ -18,7 +18,7 @@ namespace ImpoBooks.DataAccess.Entities
 		[Column("publisher_id")] public int PublisherId { get; set; }
 		[Column("author_id")] public int AuthorId { get; set; }
 		[Column("description")] public string Description { get; set; }
-		[Column("release_date")] public DateTime ReleaseDate { get; set; }
+		[Column("release_date")] public string ReleaseDate { get; set; }
 		[Column("price")] public decimal Price { get; set; }
 		[Column("rating")] public decimal Rating { get; set; }
 		[Column("format")] public string Format { get; set; }
@@ -34,7 +34,7 @@ namespace ImpoBooks.DataAccess.Entities
 			PublisherId == book.PublisherId &&
 			AuthorId == book.AuthorId &&
 			Description == book.Description &&
-			ReleaseDate.Equals(book.ReleaseDate.AddDays(1)) &&
+			ReleaseDate == book.ReleaseDate &&
 			Price == book.Price &&
 			Rating == book.Rating &&
 			Format == book.Format &&

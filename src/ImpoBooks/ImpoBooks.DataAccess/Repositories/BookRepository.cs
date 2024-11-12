@@ -119,7 +119,7 @@ namespace ImpoBooks.DataAccess.Repositories
 			return books;
 		}
 
-		public async Task<IEnumerable<Book>> GetByReleasDateAsync(DateTime releasDate)
+		public async Task<IEnumerable<Book>> GetByReleasDateAsync(string releasDate)
 		{
 			ModeledResponse<Book> response = await _client.From<Book>().Where(x => x.ReleaseDate == releasDate).Get();
 			IEnumerable<Book> books = response.Models;
