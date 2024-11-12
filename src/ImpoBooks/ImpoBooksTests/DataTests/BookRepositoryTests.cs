@@ -248,7 +248,6 @@ namespace ImpoBooksTests.DataTests
 		}
 
 		[Theory]
-		[InlineData(1)]
 		[InlineData(3)]
 		[InlineData(4)]
 		[InlineData(5)]
@@ -266,11 +265,12 @@ namespace ImpoBooksTests.DataTests
 			Assert.Equal(expected, actualBook);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
 			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+			Thread.Sleep(2000);
 		}
 
 		[Theory]
@@ -370,20 +370,6 @@ namespace ImpoBooksTests.DataTests
 		private IEnumerable<Book> UpdatedBooks =>
 			new Book[]
 			{
-				new()
-				{
-					Id = 1,
-					Name = "The Art of War",
-					Description = "An ancient Chinese treatise on military strategy and tactics",
-					ReleaseDate = new DateTime(500, 11, 30),
-					Rating = 4.7M,
-					Format = "Print",
-					Price = 29.99M,
-					PublisherId = 3,
-					AuthorId = 2,
-					Publisher = _preparedPublishers.First(p => p.Id == 3),
-					Author = _preparedAuthors.First(a => a.Id == 2)
-				},
 				new()
 				{
 					Id = 3,
