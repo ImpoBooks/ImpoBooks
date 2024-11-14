@@ -19,12 +19,14 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				.Append(source.Author.Person.Surname)
 				.ToString();
 
+			IEnumerable<string> genres = source.Genres!.Select(g => g.Name);
+
 			return new CatalogBookModel() 
 			{
 				Id = source.Id,
 				Name = source.Name,
 				Author = authorFullName,
-				Genres = string.Join(", ", source.Genres!),
+				Genres = string.Join(", ", genres),
 				ReleaseDate = source.ReleaseDate,
 				Rating = source.Rating,
 				Price = source.Price,
