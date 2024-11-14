@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.Tests.Integration.DataTests
 {
-	[Collection("Data Tests Collection")]
+	[Collection("Integration Tests Collection")]
 	public class AuthorRepositoryTests : IClassFixture<AuthorSupabaseFixture>
 	{
 		private readonly Client _client;

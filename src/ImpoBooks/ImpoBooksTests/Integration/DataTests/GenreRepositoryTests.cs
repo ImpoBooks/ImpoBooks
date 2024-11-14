@@ -10,7 +10,7 @@ using Xunit.Sdk;
 
 namespace ImpoBooks.Tests.Integration.DataTests
 {
-	[Collection("Data Tests Collection")]
+	[Collection("Integration Tests Collection")]
 	public class GenreRepositoryTests : IClassFixture<GenreSupabaseFixture>
 	{
 		private readonly Client _client;

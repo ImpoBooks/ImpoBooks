@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.Tests.Integration.BusinessTests
 {
+	[Collection("Integration Tests Collection")]
 	public class CatalogServiceTests : IClassFixture<BookSupabaseFixture>
 	{
 		private readonly Client _client;
@@ -89,6 +90,13 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			//Assert
 			Assert.True(result.IsError);
 			Assert.Equal(CatalogErrors.BooksNotFound, result.FirstError);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
 		}
 
 		[Fact]
