@@ -1,5 +1,4 @@
 ﻿using ImpoBooks.DataAccess.Entities;
-using ImpoBooksTests;
 using Supabase;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImpoBooks.Tests.Integration.DataTests.Fixtures
+namespace ImpoBooks.Tests.Integration.Fixtures
 {
 	public class GenreSupabaseFixture : IAsyncLifetime
 	{

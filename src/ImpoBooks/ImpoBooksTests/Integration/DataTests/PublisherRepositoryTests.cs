@@ -1,7 +1,6 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Tests.Integration.DataTests.Fixtures;
-using ImpoBooksTests;
+using ImpoBooks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;
@@ -148,6 +147,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			Thread.Sleep(2000);
 		}
 
 		[Theory]

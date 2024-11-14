@@ -1,7 +1,6 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Tests.Integration.DataTests.Fixtures;
-using ImpoBooksTests;
+using ImpoBooks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;

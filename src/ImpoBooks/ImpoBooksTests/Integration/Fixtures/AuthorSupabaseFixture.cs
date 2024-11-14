@@ -1,5 +1,4 @@
 ﻿using ImpoBooks.DataAccess.Entities;
-using ImpoBooksTests;
 using Supabase;
 using System;
 using System.Collections.Generic;
@@ -7,21 +6,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImpoBooks.Tests.Integration.DataTests.Fixtures
+namespace ImpoBooks.Tests.Integration.Fixtures
 {
-	public class PublisherSupabaseFixture : IAsyncLifetime
+	public class AuthorSupabaseFixture : IAsyncLifetime
 	{
 		public Client client { get; private set; }
-		public IEnumerable<Publisher> PrepearedPublishers =>
-			new Publisher[]
+		public IEnumerable<Author> PrepearedAuthors =>
+			new Author[]
 			{
-				new() { Id = 1, Name = "Ranok"},
-				new() { Id = 2, Name = "Smoloskyp"},
-				new() { Id = 3, Name = "Old Lion Publishing House"},
-				new() { Id = 4, Name = "Nash Format"},
-				new() { Id = 5, Name = "Vivat"}
+						new() { Id = 1, PersonId = 4},
+						new() { Id = 2, PersonId = 3},
+						new() { Id = 3, PersonId = 2},
+						new() { Id = 4, PersonId = 6},
+						new() { Id = 5, PersonId = 1}
 			};
+		public IEnumerable<Person> PrepearedPersons =>
+			new Person[]
+			{
+				new() { Id = 4, Name = "Volodymyr", Surname = "Tkachenko"},
+				new() { Id = 3, Name = "Andriy", Surname = "Grytsenko"},
+				new() { Id = 2, Name = "Dmytro", Surname = "Kovalchuk"},
+				new() { Id = 6, Name = "Olha", Surname = "Syrenko"},
+				new() { Id = 1, Name = "Oleksandr", Surname = "Shevchenko"}
 
+			};
 		public IEnumerable<Book> PrepearedBooks =>
 			new Book[]
 			{
@@ -51,31 +59,24 @@ namespace ImpoBooks.Tests.Integration.DataTests.Fixtures
 				},
 				new()
 				{
-					Id = 3,
-					Name = "The Da Vinci Code",
-					Description = "Puzzles, ancient symbols, and intrigue unfolding in the heart of the religious world",
-					ReleaseDate = "2003.03.18",
-					Rating = 4.3M,
+					Id = 4,
+					Name = "The Picture of Dorian Gray",
+					Description = "A moral tale about a young man obsessed with his beauty",
+					ReleaseDate = "1998.07.12",
+					Rating = 4.7M,
 					Format = "Electronic",
-					Price = 38.99M,
-					PublisherId = 2,
-					AuthorId = 1,
-				}
+					Price = 22.99M,
+					PublisherId = 5,
+					AuthorId = 5,
+				},
 			};
 
-		public IEnumerable<Author> PrepearedAuthors =>
-			new Author[]
+		public IEnumerable<Publisher> PrepearedPublishers =>
+			new Publisher[]
 			{
-				new() { Id = 1, PersonId = 4},
-				new() { Id = 2, PersonId = 3},
-			};
-
-
-		public IEnumerable<Person> PrepearedPersons =>
-			new Person[]
-			{
-				new() { Id = 4, Name = "Volodymyr", Surname = "Tkachenko"},
-				new() { Id = 3, Name = "Andriy", Surname = "Grytsenko"},
+				new() { Id = 3, Name = "Old Lion Publishing House"},
+				new() { Id = 4, Name = "Nash Format"},
+				new() { Id = 5, Name = "Vivat"}
 			};
 
 		public IEnumerable<Genre> PrepearedGenres =>
@@ -87,6 +88,7 @@ namespace ImpoBooks.Tests.Integration.DataTests.Fixtures
 				new() { Id = 4, Name = "Adventure"},
 				new() { Id = 5, Name = "Fantasy"}
 			};
+
 
 		public async Task DisposeAsync()
 		{
