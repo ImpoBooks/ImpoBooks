@@ -25,7 +25,7 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 
 			IEnumerable<Book> dbBooks = await _bookRepository.GetAllAsync();
 
-			if (dbBooks is null)
+			if (dbBooks is null || !dbBooks.Any())
 				return CatalogErrors.BooksNotFound;
 
 			IEnumerable<Book> filteredBooks = dbBooks.FilterByKeyWord(filterOptions.KeyWords)
@@ -34,7 +34,7 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 				.FilterByPrice(filterOptions.MinPrice, filterOptions.MaxPrice)
 				.FilterByRating(filterOptions.MinRating, filterOptions.MaxRating);
 
-			if (filteredBooks is null)
+			if (filteredBooks is null || !filteredBooks.Any())
 				return CatalogErrors.NoBookMatches;
 
 			IEnumerable<CatalogBookModel> result = filteredBooks.Select(b => b.ToCatalogBookModel());
