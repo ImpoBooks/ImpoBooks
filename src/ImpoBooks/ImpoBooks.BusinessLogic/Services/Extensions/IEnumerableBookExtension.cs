@@ -51,6 +51,9 @@ namespace ImpoBooks.BusinessLogic.Services.Extensions
 
 		public static IEnumerable<Book> FilterByPrice(this IEnumerable<Book> source, decimal minPrice, decimal maxPrice)
 		{
+			if (minPrice == 0 && maxPrice == 0)
+				return source;
+
 			return source.Where(book =>
 				book.Price >= minPrice &&
 				book.Price <= maxPrice);
@@ -58,6 +61,9 @@ namespace ImpoBooks.BusinessLogic.Services.Extensions
 
 		public static IEnumerable<Book> FilterByRating(this IEnumerable<Book> source, decimal minRating, decimal maxRating)
 		{
+			if (minRating == 0 && maxRating == 0)
+				return source;
+
 			return source.Where(book =>
 				book.Rating >= minRating &&
 				book.Rating <= maxRating);
