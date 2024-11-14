@@ -1,7 +1,7 @@
 ﻿using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Interfaces;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Tests.DataTests.Fixtures;
+using ImpoBooks.Tests.Integration.DataTests.Fixtures;
 using ImpoBooksTests;
 using Supabase;
 using System;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImpoBooks.Tests.DataTests
+namespace ImpoBooks.Tests.Integration.DataTests
 {
 	[Collection("Data Tests Collection")]
 	public class AuthorRepositoryTests : IClassFixture<AuthorSupabaseFixture>
@@ -227,12 +227,12 @@ namespace ImpoBooks.Tests.DataTests
 				new() { Id = 8, Name = "Tyler", Surname = "Durden"}
 			};
 
-				private IEnumerable<Author> UpdatedAuthors => 
-			new Author[] 
-			{
+		private IEnumerable<Author> UpdatedAuthors =>
+	new Author[]
+	{
 				new() { Id = 2, PersonId = 1},
 				new() { Id = 4, PersonId = 3},
 				new() { Id = 5, PersonId = 6},
-			};
+	};
 	}
 }

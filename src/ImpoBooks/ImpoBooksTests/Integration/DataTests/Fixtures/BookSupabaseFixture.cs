@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImpoBooks.Tests.DataTests.Fixtures
+namespace ImpoBooks.Tests.Integration.DataTests.Fixtures
 {
-    public class BookSupabaseFixture : IAsyncLifetime
-    {
-        public Client client { get; private set; }
-        public IEnumerable<Book> PrepearedBooks =>
-            new Book[]
-	        {
+	public class BookSupabaseFixture : IAsyncLifetime
+	{
+		public Client client { get; private set; }
+		public IEnumerable<Book> PrepearedBooks =>
+			new Book[]
+			{
 				new()
 				{
 					Id = 1,
@@ -131,7 +131,7 @@ namespace ImpoBooks.Tests.DataTests.Fixtures
 			};
 
 		public async Task DisposeAsync()
-        {
+		{
 			await IntegrationTestHelper.ClearTable<Genre>(client);
 			await IntegrationTestHelper.ClearTable<Publisher>(client);
 			await IntegrationTestHelper.ClearTable<Person>(client);
@@ -141,8 +141,8 @@ namespace ImpoBooks.Tests.DataTests.Fixtures
 		}
 
 		public async Task InitializeAsync()
-        {
-            client = IntegrationTestHelper.TestClientInit();
+		{
+			client = IntegrationTestHelper.TestClientInit();
 			await IntegrationTestHelper.InitTable(client, PrepearedPersons);
 			await IntegrationTestHelper.InitTable(client, PrepearedAuthors);
 			await IntegrationTestHelper.InitTable(client, PrepearedGenres);

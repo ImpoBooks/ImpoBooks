@@ -1,6 +1,7 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Tests.DataTests.Fixtures;
+using ImpoBooks.Tests.Integration.DataTests.Fixtures;
+using ImpoBooksTests;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;
@@ -8,9 +9,9 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace ImpoBooksTests.DataTests
+namespace ImpoBooks.Tests.Integration.DataTests
 {
-    [Collection("Data Tests Collection")]
+	[Collection("Data Tests Collection")]
 	public class PublisherRepositoryTests : IClassFixture<PublisherSupabaseFixture>
 	{
 		private readonly Client _client;
@@ -23,7 +24,7 @@ namespace ImpoBooksTests.DataTests
 
 
 		public PublisherRepositoryTests(PublisherSupabaseFixture fixture)
-        {
+		{
 			_client = fixture.client;
 			_repository = new(fixture.client);
 			_preparedPublishers = fixture.PrepearedPublishers;
@@ -33,14 +34,14 @@ namespace ImpoBooksTests.DataTests
 			_preparedGenres = fixture.PrepearedGenres;
 		}
 
-        [Theory]
-        [InlineData(1)]
+		[Theory]
+		[InlineData(1)]
 		[InlineData(2)]
 		[InlineData(3)]
 		[InlineData(4)]
 		[InlineData(5)]
 		public async Task GetByIdAsync_ReturnExpectedPublisher(int Id)
-        {
+		{
 			//Arrange
 			Publisher expected = _preparedPublishers.FirstOrDefault(x => x.Id == Id)!;
 			expected.Books = _preparedBooks.Where(x => x.PublisherId == Id).ToList();
@@ -87,11 +88,11 @@ namespace ImpoBooksTests.DataTests
 		{
 			//Arrange
 			IEnumerable<Publisher> expected = _preparedPublishers;
-			expected = expected.Select(x => new Publisher() 
-			{ 
+			expected = expected.Select(x => new Publisher()
+			{
 				Id = x.Id,
-				Name = x.Name, 
-				Books = _preparedBooks.Where(b => b.PublisherId == x.Id).ToList() 
+				Name = x.Name,
+				Books = _preparedBooks.Where(b => b.PublisherId == x.Id).ToList()
 			});
 
 			//Act

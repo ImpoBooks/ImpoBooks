@@ -7,19 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImpoBooks.Tests.DataTests.Fixtures
+namespace ImpoBooks.Tests.Integration.DataTests.Fixtures
 {
-    public class GenreSupabaseFixture : IAsyncLifetime
-    {
-        public Client client { get; private set; }
-        public IEnumerable<Genre> PrepearedGenres =>
-            new Genre[]
-	        {
-                new() { Id = 1, Name = "Science Fiction"},
-                new() { Id = 2, Name = "Detective"},
-                new() { Id = 3, Name = "Detective"},
-                new() { Id = 4, Name = "Adventure"},
-                new() { Id = 5, Name = "Fantasy"}
+	public class GenreSupabaseFixture : IAsyncLifetime
+	{
+		public Client client { get; private set; }
+		public IEnumerable<Genre> PrepearedGenres =>
+			new Genre[]
+			{
+				new() { Id = 1, Name = "Science Fiction"},
+				new() { Id = 2, Name = "Detective"},
+				new() { Id = 3, Name = "Detective"},
+				new() { Id = 4, Name = "Adventure"},
+				new() { Id = 5, Name = "Fantasy"}
 			};
 
 		public IEnumerable<Book> PrepearedBooks =>
@@ -132,7 +132,7 @@ namespace ImpoBooks.Tests.DataTests.Fixtures
 			};
 
 		public async Task DisposeAsync()
-        {
+		{
 			await IntegrationTestHelper.ClearTable<Genre>(client);
 			await IntegrationTestHelper.ClearTable<Publisher>(client);
 			await IntegrationTestHelper.ClearTable<Person>(client);
@@ -141,9 +141,9 @@ namespace ImpoBooks.Tests.DataTests.Fixtures
 			await IntegrationTestHelper.ClearTable<BookGenre>(client);
 		}
 
-        public async Task InitializeAsync()
-        {
-            client = IntegrationTestHelper.TestClientInit();
+		public async Task InitializeAsync()
+		{
+			client = IntegrationTestHelper.TestClientInit();
 			await IntegrationTestHelper.InitTable(client, PrepearedPersons);
 			await IntegrationTestHelper.InitTable(client, PrepearedAuthors);
 			await IntegrationTestHelper.InitTable(client, PrepearedGenres);
@@ -152,5 +152,5 @@ namespace ImpoBooks.Tests.DataTests.Fixtures
 			await IntegrationTestHelper.InitTable(client, PrepearedBookGenreRelations);
 		}
 
-    }
+	}
 }

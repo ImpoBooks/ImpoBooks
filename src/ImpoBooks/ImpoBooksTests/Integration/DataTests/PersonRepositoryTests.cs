@@ -1,6 +1,7 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Tests.DataTests.Fixtures;
+using ImpoBooks.Tests.Integration.DataTests.Fixtures;
+using ImpoBooksTests;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;
@@ -8,9 +9,9 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace ImpoBooksTests.DataTests
+namespace ImpoBooks.Tests.Integration.DataTests
 {
-    [Collection("Data Tests Collection")]
+	[Collection("Data Tests Collection")]
 	public class PersonRepositoryTests : IClassFixture<PersonSupabaseFixture>
 	{
 		private readonly Client _client;
@@ -18,14 +19,14 @@ namespace ImpoBooksTests.DataTests
 		private IEnumerable<Person> _preparedPersons;
 
 		public PersonRepositoryTests(PersonSupabaseFixture fixture)
-        {
+		{
 			_client = fixture.client;
 			_repository = new(fixture.client);
 			_preparedPersons = fixture.PreparedPersons;
 		}
 
-        [Theory]
-        [InlineData(1)]
+		[Theory]
+		[InlineData(1)]
 		[InlineData(2)]
 		[InlineData(3)]
 		[InlineData(4)]
@@ -36,7 +37,7 @@ namespace ImpoBooksTests.DataTests
 		[InlineData(9)]
 		[InlineData(10)]
 		public async Task GetByIdAsync_ReturnExpectedPerson(int Id)
-        {
+		{
 			//Arrange
 			Person expected = _preparedPersons.FirstOrDefault(x => x.Id == Id)!;
 
@@ -177,8 +178,8 @@ namespace ImpoBooksTests.DataTests
 				new() { Id = 14, Name = "Oleh", Surname = "Vynnyk"}
 			};
 
-		private IEnumerable<Person> UpdatedPersons => 
-			new Person[] 
+		private IEnumerable<Person> UpdatedPersons =>
+			new Person[]
 			{
 				new() { Id = 5, Name = "Vasyl", Surname = "Stus"},
 				new() { Id = 7, Name = "Ivan", Surname = "Franko"},

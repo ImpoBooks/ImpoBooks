@@ -1,6 +1,7 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Tests.DataTests.Fixtures;
+using ImpoBooks.Tests.Integration.DataTests.Fixtures;
+using ImpoBooksTests;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;
@@ -8,9 +9,9 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace ImpoBooksTests.DataTests
+namespace ImpoBooks.Tests.Integration.DataTests
 {
-    [Collection("Data Tests Collection")]
+	[Collection("Data Tests Collection")]
 	public class BookRepositoryTests : IClassFixture<BookSupabaseFixture>
 	{
 		private readonly Client _client;
@@ -23,7 +24,7 @@ namespace ImpoBooksTests.DataTests
 		private IEnumerable<BookGenre> _prepearedBookGenreRelations;
 
 		public BookRepositoryTests(BookSupabaseFixture fixture)
-        {
+		{
 			_client = fixture.client;
 			_repository = new(fixture.client);
 			_preparedPersons = fixture.PrepearedPersons;
@@ -54,14 +55,14 @@ namespace ImpoBooksTests.DataTests
 				});
 		}
 
-        [Theory]
-        [InlineData(1)]
+		[Theory]
+		[InlineData(1)]
 		[InlineData(2)]
 		[InlineData(3)]
 		[InlineData(4)]
 		[InlineData(5)]
 		public async Task GetByIdAsync_ReturnExpectedBook(int Id)
-        {
+		{
 			//Arrange
 			Book expected = _preparedBooks.FirstOrDefault(x => x.Id == Id)!;
 			expected = AddGenres(expected);
