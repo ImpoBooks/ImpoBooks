@@ -22,10 +22,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ImpoBooks.DataAccess\ImpoBooks.DataAccess.csproj" />
+    <ProjectReference Include="..\ImpoBooks.BusinessLogic\ImpoBooks.BusinessLogic.csproj" />
+
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Integration\NewFolder\" />
   </ItemGroup>
 
 </Project>
