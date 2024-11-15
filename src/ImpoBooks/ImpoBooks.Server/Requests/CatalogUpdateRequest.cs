@@ -1,7 +1,10 @@
-﻿namespace ImpoBooks.Server.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ImpoBooks.Server.Request1s
 {
 	public class CatalogUpdateRequest
 	{
+		[Required] public int Id { get; set; }
 		public string? Name { get; set; }
 		public string? Genre { get; set; }
 		public string? Author { get; set; }
