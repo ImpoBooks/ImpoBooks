@@ -2,6 +2,7 @@
 using ImpoBooks.BusinessLogic.Services.Catalog;
 using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.Server.Extensions;
+using ImpoBooks.Server.Request1s;
 using ImpoBooks.Server.Requests;
 using ImpoBooks.Server.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,21 @@ namespace ImpoBooks.Server.Controllers
 				await _catalogService.CreateBookAsync(catalogRequest.ToModel());
 
 			return result.Match(
-				books => Results.Ok(books),
+				book => Results.Ok(book),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
+
+		[HttpPut("admin/books/edit")]
+		[ProducesResponseType<CatalogBookModel>(StatusCodes.Status200OK)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+		public async Task<IResult> UpdateBook(CatalogUpdateRequest catalogRequest)
+		{
+			ErrorOr<CatalogBookModel> result =
+				await _catalogService.UpdateBookAsync(catalogRequest.Id, catalogRequest.ToModel());
+
+			return result.Match(
+				book => Results.Ok(book),
 				errors => Results.BadRequest(errors.First())
 			);
 		}
