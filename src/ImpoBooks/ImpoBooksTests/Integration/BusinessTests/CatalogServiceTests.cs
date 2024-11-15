@@ -188,6 +188,61 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
 		}
 
+		[Fact]
+		public async Task UpdateBookAsync_ReturnBookIsNullError()
+		{
+			//Arange
+			BookModel? book = null;
+			int id = 1;
+
+			//Act
+			ErrorOr<CatalogBookModel> result = await _catalogService.UpdateBookAsync(id, book);
+
+			//Asert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.BookIsNull, result.FirstError);
+		}
+
+		[Fact]
+		public async Task UpdateBookAsync_ReturnBookNotFoundError()
+		{
+			//Arange
+			BookModel book = PreparedBooks.FirstOrDefault(b => b.Name == "The Time Catchers")!;
+			int id = 6;
+
+			//Act
+			ErrorOr<CatalogBookModel> result = await _catalogService.UpdateBookAsync(id, book);
+
+			//Asert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.BookNotFound, result.FirstError);
+		}
+
+		[Theory]
+		[InlineData(3, "Da Vinci Code")]
+		[InlineData(5, "The Hobbit")]
+		[InlineData(2, "Murder on the Orient Express")]
+		public async Task UpdateBookAsync_ReturnExpectedResult(int bookId, string newBookName)
+		{
+			//Arange
+			BookModel book = PreparedBooks.FirstOrDefault(b => b.Name == newBookName)!;
+			CatalogBookModel expected = ExpectedBooks.FirstOrDefault(b => b.Name == newBookName)!;
+			expected.Id = bookId;
+
+			//Act
+			ErrorOr<CatalogBookModel> result = await _catalogService.UpdateBookAsync(bookId, book);
+
+			//Asert
+			Assert.Equal(expected, result.Value);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+		}
+
 		private IEnumerable<BookModel> PreparedBooks =>
 			new BookModel[]
 			{
@@ -234,6 +289,39 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					ReleaseDate = "2023.12.15",
 					Rating = 4.5M,
 					Price = 99.99M
+				},
+				new()
+				{
+					Name = "Da Vinci Code",
+					Description = "New Description",
+					Author = "Oleksandr Shevchenko",
+					Genres = "Detective Science-Fiction",
+					Publisher = "Smoloskyp",
+					ReleaseDate = "2003.03.18",
+					Rating = 4.3M,
+					Price = 38.99M
+				},
+				new()
+				{
+					Name = "The Hobbit",
+					Description = "The adventures of Bilbo Baggins in the fantastic world of Middle-earth",
+					Author = "Olha Syrenko",
+					Genres = "Science-Fiction",
+					Publisher = "Ranok",
+					ReleaseDate = "1947.03.18",
+					Rating = 4.3M,
+					Price = 38.99M
+				},
+				new()
+				{
+					Name = "Murder on the Orient Express",
+					Description = "A classic detective story about an investigation aboard a train",
+					Author = "Volodymyr Tkachenko",
+					Genres = "Fantasy",
+					Publisher = "Ranok",
+					ReleaseDate = "2019.08.25",
+					Rating = 4.5M,
+					Price = 32.99M
 				}
 			};
 
@@ -244,7 +332,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 				Id = 1,
 				Name = "The Secret Garden",
 				Author = "Andriy Grytsenko",
-				Genres = "Detective, Adventure",
+				Genres = "Detective Adventure",
 				ReleaseDate = "2021.05.2",
 				Rating = 4.8M,
 				Price = 25.99M,
@@ -253,7 +341,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			{
 				Name = "The Time Catchers",
 				Author = "Kateryna Moroz",
-				Genres = "Adventure, Myth",
+				Genres = "Adventure Myth",
 				ReleaseDate = "2014.04.23",
 				Rating = 4.6M,
 				Price = 21.99M
@@ -271,10 +359,37 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			{
 				Name = "Unknown Title",
 				Author = "Oleksandr Shevchenko",
-				Genres = "Detective, Science-Fiction",
+				Genres = "Detective Science-Fiction",
 				ReleaseDate = "2023.12.15",
 				Rating = 4.5M,
 				Price = 99.99M
+			},
+			new()
+			{
+				Name = "Da Vinci Code",
+				Author = "Oleksandr Shevchenko",
+				Genres = "Detective Science-Fiction",
+				ReleaseDate = "2003.03.18",
+				Rating = 4.3M,
+				Price = 38.99M
+			},
+			new()
+			{
+				Name = "The Hobbit",
+				Author = "Olha Syrenko",
+				Genres = "Science-Fiction",
+				ReleaseDate = "1947.03.18",
+				Rating = 4.3M,
+				Price = 38.99M
+			},
+			new()
+			{
+				Name = "Murder on the Orient Express",
+				Author = "Volodymyr Tkachenko",
+				Genres = "Fantasy",
+				ReleaseDate = "2019.08.25",
+				Rating = 4.5M,
+				Price = 32.99M
 			}
 		};
 	}
