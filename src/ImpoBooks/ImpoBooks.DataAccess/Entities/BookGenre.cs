@@ -26,6 +26,7 @@ namespace ImpoBooks.DataAccess.Entities
 			{
 				Id = Id,
 				BookId = BookId,
+				GenreId = GenreId,
 				Book = Book,
 				Genre = Genre
 			};
