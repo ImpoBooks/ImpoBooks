@@ -34,7 +34,15 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			_fixture = fixture;
 			_client = fixture.client;
 			_repository = new(fixture.client);
-			_catalogService = new(_repository);
+			_catalogService = new
+				(
+					_repository,
+					new PersonRepository(fixture.client), 
+					new AuthorRepository(fixture.client),
+					new PublisherRepository(fixture.client),
+					new GenreRepository(fixture.client),
+					new BookGenreRepository(fixture.client)
+				);
 			_preparedPersons = fixture.PrepearedPersons;
 			_preparedAuthors = fixture.PrepearedAuthors
 				.Select(x => new Author()
@@ -74,7 +82,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 
 			//Assert
 			Assert.True(result.IsError);
-			Assert.Equal(CatalogErrors.IsNull, result.FirstError);
+			Assert.Equal(CatalogErrors.FilterIsNull, result.FirstError);
 		}
 
 		[Fact]
@@ -118,7 +126,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		{
 			//Arrang
 			FilterModel? filter = new() { KeyWords = "Secret Garden" };
-			IEnumerable<CatalogBookModel> expected = expectedBooks;
+			IEnumerable<CatalogBookModel> expected = ExpectedBooks.Where(b => b.Name == "The Secret Garden");
 
 			//Act
 			ErrorOr<IEnumerable<CatalogBookModel>> result = await _catalogService.GetBooksAsync(filter);
@@ -127,7 +135,109 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.Equal(expected, result.Value);
 		}
 
-		private IEnumerable<CatalogBookModel> expectedBooks => new CatalogBookModel[]
+		[Fact]
+		public async Task CreateBookAsync_ReturnBookIsNullError()
+		{
+			//Arrange
+			BookModel? book = null;
+
+			//Act
+			ErrorOr<CatalogBookModel> result = await _catalogService.CreateBookAsync(book);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.BookIsNull, result.FirstError);
+		}
+
+		[Fact]
+		public async Task CreateBookAsync_ReturnAlreadyExistsError()
+		{
+			//Arrange
+			BookModel book = PreparedBooks.FirstOrDefault(b => b.Name == "The Secret Garden")!;
+
+			//Act
+			ErrorOr<CatalogBookModel> result = await _catalogService.CreateBookAsync(book);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.AlreadyExists, result.FirstError);
+		}
+
+		[Theory]
+		[InlineData("The Time Catchers")]
+		[InlineData("Non-existent book")]
+		[InlineData("Unknown Title")]
+		public async Task CreateBookAsync_ReturnExpectedResult(string bookName)
+		{
+			//Arrange
+			BookModel book = PreparedBooks.FirstOrDefault(b => b.Name == bookName)!;
+			CatalogBookModel expected = ExpectedBooks.FirstOrDefault(b => b.Name == bookName)!;
+
+			//Act
+			ErrorOr<CatalogBookModel> result = await _catalogService.CreateBookAsync(book);
+			expected.Id = result.Value.Id;
+
+			//Assert
+			Assert.Equal(expected, result.Value);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+		}
+
+		private IEnumerable<BookModel> PreparedBooks =>
+			new BookModel[]
+			{
+				new()
+				{
+					Name = "The Secret Garden",
+					Description = "The story of a girl who discovers a magical garden and transforms her life",
+					Author = "Andriy Grytsenko",
+					Genres = "Detective Adventure",
+					Publisher = "Old Lion Publishing House",
+					ReleaseDate = "2021.05.2",
+					Rating = 4.8M,
+					Price = 25.99M
+				},
+				new()
+				{
+					Name = "The Time Catchers",
+					Description = "A fantasy novel series where heroes travel through time",
+					Author = "Kateryna Moroz",
+					Genres = "Adventure Myth",
+					Publisher = "Nash Format",
+					ReleaseDate = "2014.04.23",
+					Rating = 4.6M,
+					Price = 21.99M
+				},
+				new()
+				{
+					Name = "Non-existent book",
+					Description = "Description of non-existent book",
+					Author = "Joe Biden",
+					Genres = "NewGenre",
+					Publisher = "NewPublisher",
+					ReleaseDate = "2024.04.01",
+					Rating = 3.3M,
+					Price = 111.11M
+				},
+				new()
+				{
+					Name = "Unknown Title",
+					Description = "Description of unknown book",
+					Author = "Oleksandr Shevchenko",
+					Genres = "Detective Science-Fiction",
+					Publisher = "Smoloskyp",
+					ReleaseDate = "2023.12.15",
+					Rating = 4.5M,
+					Price = 99.99M
+				}
+			};
+
+		private IEnumerable<CatalogBookModel> ExpectedBooks => new CatalogBookModel[]
 		{
 			new()
 			{
@@ -138,9 +248,34 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 				ReleaseDate = "2021.05.2",
 				Rating = 4.8M,
 				Price = 25.99M,
+			},
+			new()
+			{
+				Name = "The Time Catchers",
+				Author = "Kateryna Moroz",
+				Genres = "Adventure, Myth",
+				ReleaseDate = "2014.04.23",
+				Rating = 4.6M,
+				Price = 21.99M
+			},
+			new()
+			{
+				Name = "Non-existent book",
+				Author = "Joe Biden",
+				Genres = "NewGenre",
+				ReleaseDate = "2024.04.01",
+				Rating = 3.3M,
+				Price = 111.11M
+			},
+			new()
+			{
+				Name = "Unknown Title",
+				Author = "Oleksandr Shevchenko",
+				Genres = "Detective, Science-Fiction",
+				ReleaseDate = "2023.12.15",
+				Rating = 4.5M,
+				Price = 99.99M
 			}
 		};
-		
-
 	}
 }
