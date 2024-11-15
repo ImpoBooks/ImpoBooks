@@ -26,7 +26,7 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				Id = source.Id,
 				Name = source.Name,
 				Author = authorFullName,
-				Genres = string.Join(", ", genres),
+				Genres = string.Join(" ", genres),
 				ReleaseDate = source.ReleaseDate,
 				Rating = source.Rating,
 				Price = source.Price,
