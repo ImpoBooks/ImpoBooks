@@ -109,7 +109,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 		public IEnumerable<Genre> PrepearedGenres =>
 			new Genre[]
 			{
-				new() { Id = 1, Name = "Science Fiction"},
+				new() { Id = 1, Name = "Science-Fiction"},
 				new() { Id = 2, Name = "Detective"},
 				new() { Id = 3, Name = "Detective"},
 				new() { Id = 4, Name = "Adventure"},

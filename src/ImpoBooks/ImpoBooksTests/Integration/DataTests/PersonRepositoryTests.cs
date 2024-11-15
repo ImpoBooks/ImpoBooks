@@ -37,6 +37,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[InlineData(10)]
 		public async Task GetByIdAsync_ReturnExpectedPerson(int Id)
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			Person expected = _preparedPersons.FirstOrDefault(x => x.Id == Id)!;
 
@@ -53,6 +55,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[InlineData("Tyler", "Durden")]
 		public async Task GetByFullNameAsync_ReturnExpectedPerson(string name, string surname)
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			IEnumerable<Person> expected = _preparedPersons.Where(x => x.Name == name && x.Surname == surname)!;
 
@@ -66,6 +70,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedPersonsAmount()
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			int expected = _preparedPersons.Count();
 
@@ -79,6 +85,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedPersonsContent()
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			IEnumerable<Person> expected = _preparedPersons;
 
@@ -127,7 +135,6 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			Assert.Equal(expected, actualPerson);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			Thread.Sleep(2000);
 		}
 
 		[Theory]
