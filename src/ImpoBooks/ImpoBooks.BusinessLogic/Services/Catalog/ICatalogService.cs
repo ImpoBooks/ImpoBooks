@@ -11,5 +11,6 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 	public interface ICatalogService
 	{
 		Task<ErrorOr<IEnumerable<CatalogBookModel>>> GetBooksAsync(FilterModel filterOptions);
+		Task<ErrorOr<CatalogBookModel>> CreateBookAsync(BookModel book);
 	}
 }
