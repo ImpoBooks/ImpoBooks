@@ -16,6 +16,8 @@ namespace ImpoBooks.Infrastructure.Errors.Catalog
 			Error.Custom(ErrorTypes.IsNull, "FilterOptions.IsNull", "Filter object was null.");
 		public static Error BookIsNull =>
 			Error.Custom(ErrorTypes.IsNull, "Book.IsNull", "Book object was null.");
+		public static Error BookIdIsZero =>
+			Error.Custom(ErrorTypes.WrongInfo, "Book.Id.WrongInfo", "Book id was equal to zero.");
 
 		public static Error BooksNotFound =>
 			Error.Custom(ErrorTypes.NotFound, "Books.NotFound", "Failed to get books.");
