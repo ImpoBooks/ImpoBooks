@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build src/ImpoBooks --no-restore
     - name: Test
-      run: dotnet test src/ImpoBooks --no-build --verbosity normal
+      run: dotnet test src/ImpoBooks/ImpoBooksTests --no-build --verbosity normal

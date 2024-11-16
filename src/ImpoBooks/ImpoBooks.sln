@@ -1,12 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.Server", "ImpoBooks.Server\ImpoBooks.Server.csproj", "{A9E46699-A111-49A6-81B0-4F1CC85F103F}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImpoBooks.Server", "ImpoBooks.Server\ImpoBooks.Server.csproj", "{A9E46699-A111-49A6-81B0-4F1CC85F103F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.DataAccess", "ImpoBooks.DataAccess\ImpoBooks.DataAccess.csproj", "{943C2EFD-05F1-4AF7-BED9-71476246D7B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImpoBooks.DataAccess", "ImpoBooks.DataAccess\ImpoBooks.DataAccess.csproj", "{943C2EFD-05F1-4AF7-BED9-71476246D7B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.BusinessLogic", "ImpoBooks.BusinessLogic\ImpoBooks.BusinessLogic.csproj", "{93BA0F01-67C3-45E5-A0B5-7587C4859E31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImpoBooks.BusinessLogic", "ImpoBooks.BusinessLogic\ImpoBooks.BusinessLogic.csproj", "{93BA0F01-67C3-45E5-A0B5-7587C4859E31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.Infrastructure", "ImpoBooks.Infrastructure\ImpoBooks.Infrastructure.csproj", "{ABA48377-0526-48B1-9887-56E8DF67F810}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImpoBooks.Infrastructure", "ImpoBooks.Infrastructure\ImpoBooks.Infrastructure.csproj", "{ABA48377-0526-48B1-9887-56E8DF67F810}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpoBooks.Tests", "ImpoBooksTests\ImpoBooks.Tests.csproj", "{05D6FD71-109C-44C2-BC00-BEC4A8E775ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +35,15 @@ Global
 		{ABA48377-0526-48B1-9887-56E8DF67F810}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA48377-0526-48B1-9887-56E8DF67F810}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA48377-0526-48B1-9887-56E8DF67F810}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05D6FD71-109C-44C2-BC00-BEC4A8E775ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05D6FD71-109C-44C2-BC00-BEC4A8E775ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05D6FD71-109C-44C2-BC00-BEC4A8E775ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05D6FD71-109C-44C2-BC00-BEC4A8E775ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E46224F6-FDCE-4E8C-BEFF-649711823082}
 	EndGlobalSection
 EndGlobal
