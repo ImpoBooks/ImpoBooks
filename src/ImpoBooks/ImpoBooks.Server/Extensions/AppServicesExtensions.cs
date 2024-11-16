@@ -10,6 +10,7 @@ namespace ImpoBooks.Server.Extensions
 			services.AddSingleton<IUsersRepository, UsersRepository>();
 			services.AddSingleton<IAuthorRepository, AuthorRepository>();
 			services.AddSingleton<IBookRepository, BookRepository>();
+			services.AddSingleton<IBookGenreRepository, BookGenreRepository>();
 			services.AddSingleton<IGenreRepository, GenreRepository>();
 			services.AddSingleton<IPersonRepository, PersonRepository>();
 			services.AddSingleton<IPublisherRepository, PublisherRepository>();
