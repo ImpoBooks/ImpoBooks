@@ -56,5 +56,19 @@ namespace ImpoBooks.Server.Controllers
 				errors => Results.BadRequest(errors.First())
 			);
 		}
+
+		[HttpDelete("admin/books/delete")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status404NotFound)]
+		public async Task<IResult> DeleteBook([FromBody] int id)
+		{
+			ErrorOr<Success> result =
+				await _catalogService.DeleteBookAsync(id);
+
+			return result.Match(
+				_ => Results.Ok(),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
 	}
 }
