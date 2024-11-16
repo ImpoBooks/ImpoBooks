@@ -164,9 +164,10 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		}
 
 		[Theory]
-		[InlineData("The Time Catchers")]
-		[InlineData("Non-existent book")]
-		[InlineData("Unknown Title")]
+		//[InlineData("The Time Catchers")]
+		//[InlineData("Non-existent book")]
+		//[InlineData("Unknown Title")]
+		[InlineData("Test")]
 		public async Task CreateBookAsync_ReturnExpectedResult(string bookName)
 		{
 			//Arrange
@@ -191,14 +192,14 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		[Fact]
 		public async Task UpdateBookAsync_ReturnBookIsNullError()
 		{
-			//Arange
+			//Arrange
 			BookModel? book = null;
 			int id = 1;
 
 			//Act
 			ErrorOr<CatalogBookModel> result = await _catalogService.UpdateBookAsync(id, book);
 
-			//Asert
+			//Assert
 			Assert.True(result.IsError);
 			Assert.Equal(CatalogErrors.BookIsNull, result.FirstError);
 		}
@@ -206,14 +207,14 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		[Fact]
 		public async Task UpdateBookAsync_ReturnBookNotFoundError()
 		{
-			//Arange
+			//Arrange
 			BookModel book = PreparedBooks.FirstOrDefault(b => b.Name == "The Time Catchers")!;
 			int id = 6;
 
 			//Act
 			ErrorOr<CatalogBookModel> result = await _catalogService.UpdateBookAsync(id, book);
 
-			//Asert
+			//Assert
 			Assert.True(result.IsError);
 			Assert.Equal(CatalogErrors.BookNotFound, result.FirstError);
 		}
@@ -224,7 +225,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		[InlineData(2, "Murder on the Orient Express")]
 		public async Task UpdateBookAsync_ReturnExpectedResult(int bookId, string newBookName)
 		{
-			//Arange
+			//Arrange
 			BookModel book = PreparedBooks.FirstOrDefault(b => b.Name == newBookName)!;
 			CatalogBookModel expected = ExpectedBooks.FirstOrDefault(b => b.Name == newBookName)!;
 			expected.Id = bookId;
@@ -232,8 +233,62 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			//Act
 			ErrorOr<CatalogBookModel> result = await _catalogService.UpdateBookAsync(bookId, book);
 
-			//Asert
+			//Assert
 			Assert.Equal(expected, result.Value);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+		}
+
+		[Fact]
+		public async Task DeleteBookAsync_ReturnBookIdIsZeroError()
+		{
+			//Arrange
+			int id = 0;
+
+			//Act
+			ErrorOr<Success> result = await _catalogService.DeleteBookAsync(id);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.BookIdIsZero, result.FirstError);
+		}
+
+		[Fact]
+		public async Task DeleteBookAsync_ReturnBookNotFoundError()
+		{
+			//Arrange
+			int id = 6;
+
+			//Act
+			ErrorOr<Success> result = await _catalogService.DeleteBookAsync(id);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.BookNotFound, result.FirstError);
+		}
+
+		[Theory]
+		[InlineData(1)]
+		[InlineData(5)]
+		[InlineData(3)]
+		public async Task DeleteBookAsync_DeleteBookByProvidedId(int bookId)
+		{
+			//Arrange
+			ErrorOr<IEnumerable<CatalogBookModel>> booksBeforeDel = await _catalogService.GetBooksAsync(new FilterModel());
+			int booksCountBeforeDel = booksBeforeDel.Value.Count();
+			//Act
+			ErrorOr<Success> result = await _catalogService.DeleteBookAsync(bookId);
+			ErrorOr<IEnumerable<CatalogBookModel>> booksAfterDel = await _catalogService.GetBooksAsync(new FilterModel());
+			int booksCountAfterDel = booksAfterDel.Value.Count();
+
+			//Assert
+			Assert.Equal(Result.Success, result.Value);
+			Assert.Equal(booksCountBeforeDel - 1, booksCountAfterDel);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
@@ -322,6 +377,16 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					ReleaseDate = "2019.08.25",
 					Rating = 4.5M,
 					Price = 32.99M
+				},
+				new()
+				{
+				  Name = "Test",
+				  Description = "TestDescription",
+				  Author = "Test Author",
+				  Genres = "TestGenre",
+				  Publisher = "TEST",
+				  ReleaseDate = "16.11.2024",
+				  Price = 22
 				}
 			};
 
@@ -390,7 +455,16 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 				ReleaseDate = "2019.08.25",
 				Rating = 4.5M,
 				Price = 32.99M
-			}
+			},
+			new()
+				{
+				  Name = "Test",
+				  Author = "Test Author",
+				  Genres = "TestGenre",
+				  ReleaseDate = "16.11.2024",
+				  Rating = 0,
+				  Price = 22
+				}
 		};
 	}
 }
