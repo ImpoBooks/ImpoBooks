@@ -121,6 +121,21 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 			return result.ToErrorOr();
 		}
 
+		public async Task<ErrorOr<Success>> DeleteBookAsync(int bookId)
+		{
+			if (bookId is 0)
+				return CatalogErrors.BookIdIsZero;
+
+			Book dbBook = await _bookRepository.GetByIdAsync(bookId);
+			if (dbBook is null)
+				return CatalogErrors.BookNotFound;
+
+			await _bookRepository.DeleteByIdAsync(bookId);
+			return Result.Success;
+		}
+
+
+
 		private async Task<Author> GetOrCreateAuthorAsync(BookModel bookModel)
 		{
 			string authorName = bookModel.Author.Split(' ').First();
