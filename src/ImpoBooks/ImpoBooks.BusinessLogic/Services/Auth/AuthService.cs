@@ -29,7 +29,7 @@ public class AuthService(
         return Result.Success;
     }
 
-    public async Task<ErrorOr<string>> GenerateJwtAsync(string email, string password)
+    public async Task<ErrorOr<string>> LoginAsync(string email, string password)
     {
         User dbUser = await _usersRepository.GetByEmailAsync(email);
         if (dbUser is null)
@@ -40,4 +40,8 @@ public class AuthService(
 
         return jwtProvider.GenerateToken(dbUser);
     }
+    
+    
+    public ErrorOr<string> GenerateJwtAsync(User dbUser) =>
+        jwtProvider.GenerateToken(dbUser);
 }

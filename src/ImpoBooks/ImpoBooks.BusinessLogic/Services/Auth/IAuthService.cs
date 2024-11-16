@@ -6,5 +6,6 @@ namespace ImpoBooks.BusinessLogic.Services.Auth;
 public interface IAuthService
 {
     Task<ErrorOr<Success>> RegisterAsync(User? user);
-    Task<ErrorOr<string>> GenerateJwtAsync(string email, string password);
+    Task<ErrorOr<string>> LoginAsync(string email, string password);
+    ErrorOr<string> GenerateJwtAsync(User? user);
 }

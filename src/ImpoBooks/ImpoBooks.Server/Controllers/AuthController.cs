@@ -13,17 +13,26 @@ public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
 
-    [HttpPost("register")]
+    [HttpPost("signin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType<List<Error>>(StatusCodes.Status409Conflict)]
-    public async Task<IResult> Register([FromBody] RegisterUserRequest registerUserRequest)
+    [ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+    public async Task<IResult> Signin([FromBody] RegisterUserRequest registerUserRequest)
     {
+        ErrorOr<string> loginResult;
         User? user = registerUserRequest.ToEntity();
-        ErrorOr<Success> result = await _authService.RegisterAsync(user);
+        ErrorOr<Success> registerResult = await _authService.RegisterAsync(user);
 
-        return result.Match(
+        if (registerResult.IsError)
+            return Results.BadRequest(registerResult.Errors.First());
+        else
+            loginResult = await _authService.LoginAsync(registerUserRequest.Email, registerUserRequest.Password);
+
+        string token = loginResult.Value;
+        if (token is not null) AppendCookie("necessary-cookies", token);
+
+        return loginResult.Match(
             _ => Results.Created(),
-            errors => Results.Conflict(errors.First())
+            errors => Results.BadRequest(errors.First())
         );
     }
 
@@ -33,21 +42,25 @@ public class AuthController(IAuthService authService) : ControllerBase
     public async Task<IResult> Login([FromBody] LoginUserRequest loginUserRequest)
     {
         ErrorOr<string> result =
-            await _authService.GenerateJwtAsync(loginUserRequest.Email, loginUserRequest.Password);
+            await _authService.LoginAsync(loginUserRequest.Email, loginUserRequest.Password);
+        
         string token = result.Value;
-
-        if (token is not null)
-            HttpContext.Response.Cookies.Append("necessary-cookies", token,
-                new CookieOptions()
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None
-                });
+        if (token is not null) AppendCookie("necessary-cookies", token);
 
         return result.Match(
             _ => Results.Ok(),
             errors => Results.BadRequest(errors.First())
         );
+    }
+
+    private void AppendCookie(string key, string token)
+    {
+        HttpContext.Response.Cookies.Append(key, token,
+            new CookieOptions()
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
     }
 }
