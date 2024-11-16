@@ -28,7 +28,7 @@ namespace ImpoBooks.Tests.Unit.BusinessTests
 		{
 			//Arang
 			IEnumerable<Book> expected = ExpectedBooks[caseId];
-			IEnumerable<Book> books = PrepearedBooks;
+			IEnumerable<Book> books = PreparedBooks;
 
 			//Act
 			IEnumerable<Book> filteredBooks = books.FilterByKeyWord(keyWord);
@@ -46,7 +46,7 @@ namespace ImpoBooks.Tests.Unit.BusinessTests
 		{
 			//Arang
 			IEnumerable<Book> expected = ExpectedBooks[caseId];
-			IEnumerable<Book> books = PrepearedBooks;
+			IEnumerable<Book> books = PreparedBooks;
 
 			//Act
 			IEnumerable<Book> filteredBooks = books.FilterByGenre(genre);
@@ -64,7 +64,7 @@ namespace ImpoBooks.Tests.Unit.BusinessTests
 		{
 			//Arang
 			IEnumerable<Book> expected = ExpectedBooks[caseId];
-			IEnumerable<Book> books = PrepearedBooks;
+			IEnumerable<Book> books = PreparedBooks;
 
 			//Act
 			IEnumerable<Book> filteredBooks = books.FilterByAuthor(author);
@@ -82,7 +82,7 @@ namespace ImpoBooks.Tests.Unit.BusinessTests
 		{
 			//Arang
 			IEnumerable<Book> expected = ExpectedBooks[caseId];
-			IEnumerable<Book> books = PrepearedBooks;
+			IEnumerable<Book> books = PreparedBooks;
 
 			//Act
 			IEnumerable<Book> filteredBooks = books.FilterByPrice(min, max);
@@ -100,7 +100,7 @@ namespace ImpoBooks.Tests.Unit.BusinessTests
 		{
 			//Arang
 			IEnumerable<Book> expected = ExpectedBooks[caseId];
-			IEnumerable<Book> books = PrepearedBooks;
+			IEnumerable<Book> books = PreparedBooks;
 
 			//Act
 			IEnumerable<Book> filteredBooks = books.FilterByRating(min, max);
@@ -113,78 +113,78 @@ namespace ImpoBooks.Tests.Unit.BusinessTests
 			new List<List<Book>>()
 			{
 				new List<Book>() {
-					PrepearedBooks.FirstOrDefault(b => b.Id == 1)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 2)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 3)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 4)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 5)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 1)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 2)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 3)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 4)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 5)!
 				},
 				new List<Book>(),
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 1)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 1)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 2)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 2)!
 				},
 				new List<Book>() 
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 3)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 3)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 4)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 4)!
 				},
 				new List<Book>() 
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 5)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 5)!
 				},
 				new List<Book>() 
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 2)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 3)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 2)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 3)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 1)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 5)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 1)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 5)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 1)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 4)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 1)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 4)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 2)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 3)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 2)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 3)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 2)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 4)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 2)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 4)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 1)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 4)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 5)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 1)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 4)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 5)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 3)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 5)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 3)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 5)!
 				},
 				new List<Book>()
 				{
-					PrepearedBooks.FirstOrDefault(b => b.Id == 1)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 2)!,
-					PrepearedBooks.FirstOrDefault(b => b.Id == 4)!
+					PreparedBooks.FirstOrDefault(b => b.Id == 1)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 2)!,
+					PreparedBooks.FirstOrDefault(b => b.Id == 4)!
 				},
 			};
 
-		private List<Book> PrepearedBooks =>
+		private List<Book> PreparedBooks =>
 			new List<Book>
 			{
 				new()

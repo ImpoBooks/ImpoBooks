@@ -26,11 +26,11 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		{
 			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedPublishers = fixture.PrepearedPublishers;
-			_preparedBooks = fixture.PrepearedBooks;
-			_preparedAuthors = fixture.PrepearedAuthors;
-			_preparedPersons = fixture.PrepearedPersons;
-			_preparedGenres = fixture.PrepearedGenres;
+			_preparedPublishers = fixture.PreparedPublishers;
+			_preparedBooks = fixture.PreparedBooks;
+			_preparedAuthors = fixture.PreparedAuthors;
+			_preparedPersons = fixture.PreparedPersons;
+			_preparedGenres = fixture.PreparedGenres;
 		}
 
 		[Theory]

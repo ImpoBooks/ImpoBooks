@@ -29,16 +29,16 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			_client = fixture.client;
 			_repositoryA = new(fixture.client);
 			_repositoryP = new(fixture.client);
-			_preparedBooks = fixture.PrepearedBooks;
-			_preparedGenres = fixture.PrepearedGenres;
-			_preparedPublishers = fixture.PrepearedPublishers;
-			_preparedPersons = fixture.PrepearedPersons;
-			_preparedAuthors = fixture.PrepearedAuthors
+			_preparedBooks = fixture.PreparedBooks;
+			_preparedGenres = fixture.PreparedGenres;
+			_preparedPublishers = fixture.PreparedPublishers;
+			_preparedPersons = fixture.PreparedPersons;
+			_preparedAuthors = fixture.PreparedAuthors
 				.Select(x => new Author()
 				{
 					Id = x.Id,
 					PersonId = x.PersonId,
-					Person = fixture.PrepearedPersons.First(p => p.Id == x.PersonId)
+					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
 				});
 		}
 

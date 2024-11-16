@@ -11,7 +11,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 	public class GenreSupabaseFixture : IAsyncLifetime
 	{
 		public Client client { get; private set; }
-		public IEnumerable<Genre> PrepearedGenres =>
+		public IEnumerable<Genre> PreparedGenres =>
 			new Genre[]
 			{
 				new() { Id = 1, Name = "Science Fiction"},
@@ -21,7 +21,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 				new() { Id = 5, Name = "Fantasy"}
 			};
 
-		public IEnumerable<Book> PrepearedBooks =>
+		public IEnumerable<Book> PreparedBooks =>
 			 new Book[]
 			 {
 				new()
@@ -86,7 +86,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 				}
 			 };
 
-		public IEnumerable<Author> PrepearedAuthors =>
+		public IEnumerable<Author> PreparedAuthors =>
 			new Author[]
 			{
 				new() { Id = 1, PersonId = 4},
@@ -97,7 +97,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 			};
 
 
-		public IEnumerable<Person> PrepearedPersons =>
+		public IEnumerable<Person> PreparedPersons =>
 			new Person[]
 			{
 				new() { Id = 4, Name = "Volodymyr", Surname = "Tkachenko"},
@@ -107,7 +107,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 				new() { Id = 1, Name = "Oleksandr", Surname = "Shevchenko"}
 			};
 
-		public IEnumerable<Publisher> PrepearedPublishers =>
+		public IEnumerable<Publisher> PreparedPublishers =>
 			new Publisher[]
 			{
 				new() { Id = 1, Name = "Ranok"},
@@ -117,7 +117,7 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 				new() { Id = 5, Name = "Vivat"}
 			};
 
-		public IEnumerable<BookGenre> PrepearedBookGenreRelations =>
+		public IEnumerable<BookGenre> PreparedBookGenreRelations =>
 			new BookGenre[]
 			{
 				new() { Id = 1, BookId = 1, GenreId = 2 },
@@ -143,12 +143,12 @@ namespace ImpoBooks.Tests.Integration.Fixtures
 		public async Task InitializeAsync()
 		{
 			client = IntegrationTestHelper.TestClientInit();
-			await IntegrationTestHelper.InitTable(client, PrepearedPersons);
-			await IntegrationTestHelper.InitTable(client, PrepearedAuthors);
-			await IntegrationTestHelper.InitTable(client, PrepearedGenres);
-			await IntegrationTestHelper.InitTable(client, PrepearedPublishers);
-			await IntegrationTestHelper.InitTable(client, PrepearedBooks);
-			await IntegrationTestHelper.InitTable(client, PrepearedBookGenreRelations);
+			await IntegrationTestHelper.InitTable(client, PreparedPersons);
+			await IntegrationTestHelper.InitTable(client, PreparedAuthors);
+			await IntegrationTestHelper.InitTable(client, PreparedGenres);
+			await IntegrationTestHelper.InitTable(client, PreparedPublishers);
+			await IntegrationTestHelper.InitTable(client, PreparedBooks);
+			await IntegrationTestHelper.InitTable(client, PreparedBookGenreRelations);
 		}
 
 	}

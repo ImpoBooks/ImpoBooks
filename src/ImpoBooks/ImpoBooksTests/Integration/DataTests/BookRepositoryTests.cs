@@ -20,24 +20,24 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		private IEnumerable<Genre> _preparedGenres;
 		private IEnumerable<Publisher> _preparedPublishers;
 		private IEnumerable<Book> _preparedBooks;
-		private IEnumerable<BookGenre> _prepearedBookGenreRelations;
+		private IEnumerable<BookGenre> _preparedBookGenreRelations;
 
 		public BookRepositoryTests(BookSupabaseFixture fixture)
 		{
 			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedPersons = fixture.PrepearedPersons;
-			_preparedAuthors = fixture.PrepearedAuthors
+			_preparedPersons = fixture.PreparedPersons;
+			_preparedAuthors = fixture.PreparedAuthors
 				.Select(x => new Author()
 				{
 					Id = x.Id,
 					PersonId = x.PersonId,
-					Person = fixture.PrepearedPersons.First(p => p.Id == x.PersonId)
+					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
 				});
-			_preparedGenres = fixture.PrepearedGenres;
-			_prepearedBookGenreRelations = fixture.PrepearedBookGenreRelations;
-			_preparedPublishers = fixture.PrepearedPublishers;
-			_preparedBooks = fixture.PrepearedBooks
+			_preparedGenres = fixture.PreparedGenres;
+			_preparedBookGenreRelations = fixture.PreparedBookGenreRelations;
+			_preparedPublishers = fixture.PreparedPublishers;
+			_preparedBooks = fixture.PreparedBooks
 				.Select(x => new Book()
 				{
 					Id = x.Id,
@@ -243,7 +243,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
 		}
 
 		[Theory]
@@ -268,7 +268,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
 			Thread.Sleep(2000);
 		}
 
@@ -293,7 +293,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
 		}
 
 		[Theory]
@@ -316,7 +316,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _prepearedBookGenreRelations);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
 		}
 
 		private IEnumerable<Book> NewBooks =>
@@ -415,7 +415,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 
 		private Book AddGenres(Book book)
 		{
-			ICollection<int> genresIds = _prepearedBookGenreRelations
+			ICollection<int> genresIds = _preparedBookGenreRelations
 				.Where(x => x.BookId == book.Id)
 				.Select(x => x.GenreId)
 				.ToList();
