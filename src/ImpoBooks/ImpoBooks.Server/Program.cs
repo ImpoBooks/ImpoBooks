@@ -1,16 +1,12 @@
 using ImpoBooks.BusinessLogic.Extensions;
-using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.BusinessLogic.Services.Auth;
 using ImpoBooks.BusinessLogic.Services.Catalog;
 using ImpoBooks.BusinessLogic.Services.Product;
 using ImpoBooks.DataAccess;
-using ImpoBooks.DataAccess.Interfaces;
-using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Infrastructure;
 using ImpoBooks.Infrastructure.Providers;
 using ImpoBooks.Server.Extensions;
 using ImpoBooks.Server.Middleware;
-using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
