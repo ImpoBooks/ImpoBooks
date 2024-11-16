@@ -17,8 +17,8 @@ namespace ImpoBooks.Server.Controllers
 
 		[HttpGet]
 		[ProducesResponseType<IEnumerable<CatalogBookModel>>(StatusCodes.Status200OK)]
-		[ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
-		public async Task<IResult> GetBooks(CatalogRequest catalogRequest)
+		[ProducesResponseType<List<Error>>(StatusCodes.Status404NotFound)]
+		public async Task<IResult> GetBooks([FromQuery] CatalogRequest catalogRequest)
 		{
 			ErrorOr<IEnumerable<CatalogBookModel>> result =
 				await _catalogService.GetBooksAsync(catalogRequest.ToModel());
