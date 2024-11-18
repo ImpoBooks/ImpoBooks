@@ -13,19 +13,25 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
 
     public string GenerateToken(User user)
     {
-        Claim[] claims = [new Claim("id", user.Id.ToString()), new Claim("email", user.Email), new Claim("name", user.Name)]; 
-        
+        Claim[] claims =
+        [
+            new Claim("id", user.Id.ToString()),
+            new Claim("email", user.Email),
+            new Claim("name", user.Name),
+            new Claim("role", user.Role.Name)
+        ];
+
         SigningCredentials signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["JwtOptions:SecretKey"])),
-                SecurityAlgorithms.HmacSha256);
+            SecurityAlgorithms.HmacSha256);
 
         JwtSecurityToken token = new JwtSecurityToken(
             claims: claims,
             signingCredentials: signingCredentials,
             expires: DateTime.Now.AddHours(_configuration.GetValue<int>("JwtOptions:ExpiresHours"))
         );
-        
+
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
