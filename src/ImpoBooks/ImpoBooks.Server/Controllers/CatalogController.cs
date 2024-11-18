@@ -4,7 +4,6 @@ using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.Server.Extensions;
 using ImpoBooks.Server.Request1s;
 using ImpoBooks.Server.Requests;
-using ImpoBooks.Server.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImpoBooks.Server.Controllers
