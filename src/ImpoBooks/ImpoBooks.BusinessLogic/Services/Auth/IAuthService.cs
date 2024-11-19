@@ -7,5 +7,5 @@ public interface IAuthService
 {
     Task<ErrorOr<Success>> RegisterAsync(User? user);
     Task<ErrorOr<string>> LoginAsync(string email, string password);
-    ErrorOr<string> GenerateJwtAsync(User? user);
+    ErrorOr<string> GenerateJwt(User? user);
 }

@@ -42,6 +42,6 @@ public class AuthService(
     }
     
     
-    public ErrorOr<string> GenerateJwtAsync(User dbUser) =>
+    public ErrorOr<string> GenerateJwt(User dbUser) =>
         jwtProvider.GenerateToken(dbUser);
 }
