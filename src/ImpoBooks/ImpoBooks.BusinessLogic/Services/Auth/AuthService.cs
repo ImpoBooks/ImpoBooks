@@ -21,6 +21,9 @@ public class AuthService(
         if (user is null)
             return UserErrors.IsNull;
 
+        if (string.IsNullOrWhiteSpace(user.Email))
+            return UserErrors.EmailIsNullOrEmpty;
+
         User dbUser = await _usersRepository.GetByEmailAsync(user.Email);
         if (dbUser is not null)
             return UserErrors.AlreadyExists;
@@ -40,8 +43,13 @@ public class AuthService(
 
         return jwtProvider.GenerateToken(dbUser);
     }
-    
-    
-    public ErrorOr<string> GenerateJwt(User dbUser) =>
-        jwtProvider.GenerateToken(dbUser);
+
+
+    public ErrorOr<string> GenerateJwt(User dbUser)
+    {
+        if (dbUser is null)
+            return UserErrors.IsNull;
+
+        return jwtProvider.GenerateToken(dbUser);
+    }
 }

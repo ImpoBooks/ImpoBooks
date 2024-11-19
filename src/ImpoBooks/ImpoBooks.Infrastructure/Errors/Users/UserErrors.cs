@@ -16,6 +16,9 @@ public static class UserErrors
 
     public static Error WrongPassword =>
         Error.Custom(ErrorTypes.WrongInfo, "User.WrongPassword", "Password was invalid.");
+    
+    public static Error EmailIsNullOrEmpty =>
+        Error.Custom(ErrorTypes.IsNull, "User.EmailIsNullOrEmpty", "Email cannot be null or empty.");
 
     public static Error NullProperties(List<string> propertiesNames)
     {
