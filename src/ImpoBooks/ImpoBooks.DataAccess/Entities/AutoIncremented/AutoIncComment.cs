@@ -15,6 +15,7 @@ namespace ImpoBooks.DataAccess.Entities.AutoIncremented
 		[Column("content")] public string Content { get; set; }
 		[Column("likes_number")] public int LikesNumber { get; set; }
 		[Column("dislikes_number")] public int DislikesNumber { get; set; }
+		[Column("rating")] public decimal Rating { get; set; }
 		[Reference(typeof(User))] public User User { get; set; }
 	}
 }
