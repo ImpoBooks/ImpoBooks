@@ -16,6 +16,7 @@ namespace ImpoBooks.DataAccess.Entities
 	public class Comment : BaseModelExtended, IAutoInc<AutoIncComment>
 	{
 		[Column("user_id")] public int UserId { get; set; }
+		[Column("product_id")] public int ProductId { get; set; }
 		[Column("content")] public string Content { get; set; }
 		[Column("likes_number")] public int LikesNumber { get; set; }
 		[Column("dislikes_number")] public int DislikesNumber { get; set; }
@@ -27,6 +28,7 @@ namespace ImpoBooks.DataAccess.Entities
 			return obj is Comment comment &&
 			Id == comment.Id &&
 			UserId == comment.UserId &&
+			ProductId == comment.ProductId &&
 			Content == comment.Content &&
 			LikesNumber == comment.LikesNumber &&
 			DislikesNumber == comment.DislikesNumber &&
@@ -44,6 +46,7 @@ namespace ImpoBooks.DataAccess.Entities
 			{
 				Id = Id,
 				UserId = UserId,
+				ProductId = ProductId,
 				Content = Content,
 				LikesNumber = LikesNumber,
 				DislikesNumber = DislikesNumber,

@@ -12,6 +12,7 @@ namespace ImpoBooks.DataAccess.Entities.AutoIncremented
 	public class AutoIncComment : BaseModelAutoIncExtended
 	{
 		[Column("user_id")] public int UserId { get; set; }
+		[Column("product_id")] public int ProductId { get; set; }
 		[Column("content")] public string Content { get; set; }
 		[Column("likes_number")] public int LikesNumber { get; set; }
 		[Column("dislikes_number")] public int DislikesNumber { get; set; }
