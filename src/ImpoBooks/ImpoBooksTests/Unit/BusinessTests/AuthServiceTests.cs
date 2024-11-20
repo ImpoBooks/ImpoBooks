@@ -31,7 +31,7 @@ public class AuthServiceTests
     public async Task Register_UserIsNull_ReturnsIsNullError()
     {
         // Act
-        var result = await _authService.RegisterAsync((User)null);
+        ErrorOr<Success> result = await _authService.RegisterAsync(null);
 
         // Assert
         Assert.True(result.IsError);
@@ -43,13 +43,13 @@ public class AuthServiceTests
     public async Task Register_UserAlreadyExists_ReturnsAlreadyExistsError(string email)
     {
         // Arrange
-        var existingUser = new User { Email = email };
+        User existingUser = new User { Email = email };
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(existingUser.Email))
             .ReturnsAsync(existingUser);
 
         // Act
-        var result = await _authService.RegisterAsync(existingUser);
+        ErrorOr<Success> result = await _authService.RegisterAsync(existingUser);
 
         // Assert
         Assert.True(result.IsError);
@@ -60,13 +60,13 @@ public class AuthServiceTests
     public async Task Register_ValidUser_ReturnsSuccess()
     {
         // Arrange
-        var newUser = new User { Email = "test@example.com" };
+        User newUser = new User { Email = "test@example.com" };
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(newUser.Email))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync(null as User);
 
         // Act
-        var result = await _authService.RegisterAsync(newUser);
+        ErrorOr<Success> result = await _authService.RegisterAsync(newUser);
 
         // Assert
         Assert.False(result.IsError);
@@ -78,13 +78,13 @@ public class AuthServiceTests
     public async Task Login_UserNotFound_ReturnsNotFoundByEmailError()
     {
         // Arrange
-        var email = "test@example.com";
+        string email = "test@example.com";
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(email))
-            .ReturnsAsync((User)null);
+            .ReturnsAsync(null as User);
 
         // Act
-        var result = await _authService.LoginAsync(email, "password");
+        ErrorOr<string> result = await _authService.LoginAsync(email, "password");
 
         // Assert
         Assert.True(result.IsError);
@@ -95,8 +95,8 @@ public class AuthServiceTests
     public async Task Login_WrongPassword_ReturnsWrongPasswordError()
     {
         // Arrange
-        var email = "test@example.com";
-        var dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
+        string email = "test@example.com";
+        User dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(email))
             .ReturnsAsync(dbUser);
@@ -105,7 +105,7 @@ public class AuthServiceTests
             .Returns(false);
 
         // Act
-        var result = await _authService.LoginAsync(email, "wrongPassword");
+        ErrorOr<string> result = await _authService.LoginAsync(email, "wrongPassword");
 
         // Assert
         Assert.True(result.IsError);
@@ -116,9 +116,9 @@ public class AuthServiceTests
     public async Task Login_ValidCredentials_ReturnsJwtToken()
     {
         // Arrange
-        var email = "test@example.com";
-        var dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
-        var token = "jwtToken";
+        string email = "test@example.com";
+        User dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
+        string token = "jwtToken";
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(email))
             .ReturnsAsync(dbUser);
@@ -130,7 +130,7 @@ public class AuthServiceTests
             .Returns(token);
 
         // Act
-        var result = await _authService.LoginAsync(email, "password");
+        ErrorOr<string> result = await _authService.LoginAsync(email, "password");
 
         // Assert
         Assert.False(result.IsError);
@@ -138,17 +138,17 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task GenerateJwt_ValidUser_ReturnsJwtToken()
+    public void GenerateJwt_ValidUser_ReturnsJwtToken()
     {
         // Arrange
-        var dbUser = new User { Email = "test@example.com" };
-        var token = "jwtToken";
+        User dbUser = new User { Email = "test@example.com" };
+        string token = "jwtToken";
         _jwtProviderMock
             .Setup(provider => provider.GenerateToken(dbUser))
             .Returns(token);
 
         // Act
-        var result = _authService.GenerateJwt(dbUser);
+        ErrorOr<string> result = _authService.GenerateJwt(dbUser);
 
         // Assert
         Assert.False(result.IsError);
@@ -156,13 +156,13 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Register_UserEmailIsNull_ReturnsIsNullError()
+    public async Task Register_UserEmailIsEmpty_ReturnsIsNullOrEmptyError()
     {
         // Arrange
-        var user = new User { Email = null };
+        User user = new User { Email = "" };
 
         // Act
-        var result = await _authService.RegisterAsync(user);
+        ErrorOr<Success> result = await _authService.RegisterAsync(user);
 
         // Assert
         Assert.True(result.IsError);
@@ -173,7 +173,7 @@ public class AuthServiceTests
     public async Task Register_RepositoryThrowsException_ReturnsFailure()
     {
         // Arrange
-        var user = new User { Email = "test@example.com" };
+        User user = new User { Email = "test@example.com" };
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(user.Email))
             .ThrowsAsync(new Exception("Database error"));
@@ -186,7 +186,7 @@ public class AuthServiceTests
     public async Task Login_RepositoryThrowsException_ReturnsFailure()
     {
         // Arrange
-        var email = "test@example.com";
+        string email = "test@example.com";
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(email))
             .ThrowsAsync(new Exception("Database error"));
@@ -199,10 +199,10 @@ public class AuthServiceTests
     public async Task Login_EmptyEmail_ReturnsNotFoundByEmailError()
     {
         // Arrange
-        var email = string.Empty;
+        string email = string.Empty;
 
         // Act
-        var result = await _authService.LoginAsync(email, "password");
+        ErrorOr<string> result = await _authService.LoginAsync(email, "password");
 
         // Assert
         Assert.True(result.IsError);
@@ -213,14 +213,14 @@ public class AuthServiceTests
     public async Task Login_EmptyPassword_ReturnsWrongPasswordError()
     {
         // Arrange
-        var email = "test@example.com";
-        var dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
+        string email = "test@example.com";
+        User dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(email))
             .ReturnsAsync(dbUser);
 
         // Act
-        var result = await _authService.LoginAsync(email, string.Empty);
+        ErrorOr<string> result = await _authService.LoginAsync(email, string.Empty);
 
         // Assert
         Assert.True(result.IsError);
@@ -231,8 +231,8 @@ public class AuthServiceTests
     public async Task Login_PasswordHasherThrowsException_ReturnsFailure()
     {
         // Arrange
-        var email = "test@example.com";
-        var dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
+        string email = "test@example.com";
+        User dbUser = new User { Email = email, HashedPassword = "hashedPassword" };
         _usersRepositoryMock
             .Setup(repo => repo.GetByEmailAsync(email))
             .ReturnsAsync(dbUser);
@@ -245,13 +245,13 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task GenerateJwt_EmptyUser_ReturnsFailure()
+    public void GenerateJwt_EmptyUser_ReturnsFailure()
     {
         // Arrange
         User? dbUser = null;
 
         // Act
-        var result = _authService.GenerateJwt(dbUser);
+        ErrorOr<string> result = _authService.GenerateJwt(dbUser);
 
         // Assert
         Assert.True(result.IsError);
@@ -262,7 +262,7 @@ public class AuthServiceTests
     public void GenerateJwt_JwtProviderThrowsException_ReturnsFailure()
     {
         // Arrange
-        var dbUser = new User { Email = "test@example.com" };
+        User dbUser = new User { Email = "test@example.com" };
         _jwtProviderMock
             .Setup(provider => provider.GenerateToken(dbUser))
             .Throws(new Exception("JWT generation error"));
