@@ -12,7 +12,7 @@ using static Supabase.Postgrest.Constants;
 
 namespace ImpoBooks.DataAccess.Repositories
 {
-	public class ProductIRepository(Client client) : Repository<Product, AutoIncProduct>(client), IProductIRepository
+	public class ProductRepository(Client client) : Repository<Product, AutoIncProduct>(client), IProductRepository
 	{
 		private readonly Client _client = client;
 		public override async Task<Product> GetByIdAsync(int id)

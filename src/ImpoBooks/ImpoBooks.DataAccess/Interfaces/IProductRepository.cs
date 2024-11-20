@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImpoBooks.DataAccess.Interfaces
 {
-	public interface IProductIRepository : IRepository<Product>
+	public interface IProductRepository : IRepository<Product>
 	{
 	}
 }

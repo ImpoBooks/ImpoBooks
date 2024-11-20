@@ -16,7 +16,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 	{
 		private readonly ProductSupabaseFixture _fixture;
 		private readonly Client _client;
-		private readonly ProductIRepository _repository;
+		private readonly ProductRepository _repository;
 		private IEnumerable<Person> _preparedPersons;
 		private IEnumerable<Author> _preparedAuthors;
 		private IEnumerable<Genre> _preparedGenres;
