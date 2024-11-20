@@ -24,8 +24,8 @@ namespace ImpoBooks.DataAccess.Entities
 			return obj is Product product &&
 			Id == product.Id &&
 			BookId == product.BookId &&
-			Book.Equals(product.Book);
-			//Comments?.Count == product.Comments?.Count;
+			Book.Equals(product.Book) &&
+			Comments?.Count == product.Comments?.Count;
 		}
 
 		public override int GetHashCode()
