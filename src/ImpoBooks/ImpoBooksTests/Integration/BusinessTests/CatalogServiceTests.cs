@@ -164,9 +164,9 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		}
 
 		[Theory]
-		//[InlineData("The Time Catchers")]
-		//[InlineData("Non-existent book")]
-		//[InlineData("Unknown Title")]
+		[InlineData("The Time Catchers")]
+		[InlineData("Non-existent book")]
+		[InlineData("Unknown Title")]
 		[InlineData("Test")]
 		public async Task CreateBookAsync_ReturnExpectedResult(string bookName)
 		{
