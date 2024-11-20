@@ -16,15 +16,15 @@ namespace ImpoBooks.DataAccess.Repositories
 	{
 		private readonly Client _client = client;
 
-		public async Task<Comment> GetByUserName(string name)
+		public async Task<IEnumerable<Comment>> GetByUserName(string name)
 		{
 			ModeledResponse<Comment> response = await _client.From<Comment>()
 				.Select("*, Users!inner(*))")
 				.Filter("Users.name", Operator.Equals, name)
 				.Get();
 
-			Comment comment = response.Model;
-			return comment;
+			IEnumerable<Comment> comments = response.Models;
+			return comments;
 		}
 	}
 }

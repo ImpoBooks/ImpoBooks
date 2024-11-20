@@ -72,6 +72,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[InlineData(5)]
 		public async Task GetByIdAsync_ReturnExpectedComment(int Id)
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			Comment expected = _preparedComments.FirstOrDefault(x => x.Id == Id)!;
 
@@ -89,19 +91,23 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[InlineData("Nikita")]
 		public async Task GetByUserName_ReturnExpectedComment(string name)
 		{
+			Thread.Sleep(500);
+
 			//Arrange
-			Comment expected = _preparedComments.FirstOrDefault(x => x.User.Name == name)!;
+			IEnumerable<Comment> expected = _preparedComments.Where(x => x.User.Name == name)!;
 
 			//Act
-			Comment comment = await _repository.GetByUserName(name);
+			IEnumerable<Comment> comments = await _repository.GetByUserName(name);
 
 			//Assert
-			Assert.Equal(expected, comment);
+			Assert.Equal(expected, comments);
 		}
 
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedCommentsAmount()
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			int expected = _preparedComments.Count();
 
@@ -115,6 +121,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedCommentsContent()
 		{
+			Thread.Sleep(500);
+
 			//Arrange
 			IEnumerable<Comment> expected = _preparedComments;
 
@@ -167,7 +175,6 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedUsers);
 			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedProducts);
 			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedComments);
-			Thread.Sleep(2000);
 		}
 
 		[Theory]

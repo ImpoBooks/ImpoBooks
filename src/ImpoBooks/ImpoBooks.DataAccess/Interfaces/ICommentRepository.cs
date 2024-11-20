@@ -9,5 +9,6 @@ namespace ImpoBooks.DataAccess.Interfaces
 {
 	public interface ICommentRepository : IRepository<Comment>
 	{
+		Task<IEnumerable<Comment>> GetByUserName(string name);
 	}
 }
