@@ -1,5 +1,6 @@
 ﻿using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.DataAccess.Entities;
+using ImpoBooks.DataAccess.Entities.AutoIncremented;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,45 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				ReleaseDate = source.ReleaseDate,
 				Rating = source.Rating,
 				Price = source.Price,
+			};
+		}
+
+		public static CommentModel ToCommentModel(this Comment source)
+		{
+			return new CommentModel()
+			{
+				Id = source.Id,
+				UserName = source.User.Name,
+				Content = source.Content,
+				LikesNumber = source.LikesNumber,
+				DislikesNumber = source.DislikesNumber,
+				Rating = source.Rating
+			};
+		}
+
+		public static ProductModel ToProductModel(this DataAccess.Entities.Product source)
+		{
+			StringBuilder sb = new StringBuilder();
+			string authorFullName = sb.Append(source.Book.Author.Person.Name)
+				.Append(" ")
+				.Append(source.Book.Author.Person.Surname)
+				.ToString();
+
+			IEnumerable<string> genres = source.Book.Genres!.Select(g => g.Name);
+
+			return new ProductModel()
+			{
+				Id = source.Id,
+				Name = source.Book.Name,
+				Description = source.Book.Description,
+				Format = source.Book.Format,
+				Author = authorFullName,
+				Publisher = source.Book.Publisher.Name,
+				Genres = string.Join(" ", genres),
+				ReleaseDate = source.Book.ReleaseDate,
+				Rating = source.Book.Rating,
+				Price = source.Book.Price,
+				Comments = source.Comments.Select(c => c.ToCommentModel())
 			};
 		}
 	}
