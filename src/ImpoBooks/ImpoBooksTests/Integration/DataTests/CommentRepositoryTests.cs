@@ -13,20 +13,49 @@ namespace ImpoBooks.Tests.Integration.DataTests
 	[Collection("Integration Tests Collection")]
 	public class CommentRepositoryTests : IClassFixture<CommentSupabaseFIxture>
 	{
+		private readonly CommentSupabaseFIxture _fixture;
 		private readonly Client _client;
 		private readonly CommentRepository _repository;
 		private IEnumerable<Comment> _preparedComments;
 		private IEnumerable<User> _preparedUsers;
+		private IEnumerable<Author> _preparedAuthors;
+		private IEnumerable<Publisher> _preparedPublishers;
+		private IEnumerable<Book> _preparedBooks;
 
 		public CommentRepositoryTests(CommentSupabaseFIxture fixture)
 		{
+			_fixture = fixture;
 			_client = fixture.client;
 			_repository = new(fixture.client);
+			_preparedAuthors = fixture.PreparedAuthors
+				.Select(x => new Author()
+				{
+					Id = x.Id,
+					PersonId = x.PersonId,
+					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
+				});
+			_preparedPublishers = fixture.PreparedPublishers;
+			_preparedBooks = fixture.PreparedBooks
+				.Select(x => new Book()
+				{
+					Id = x.Id,
+					PublisherId = x.PublisherId,
+					AuthorId = x.AuthorId,
+					Name = x.Name,
+					Description = x.Description,
+					ReleaseDate = x.ReleaseDate,
+					Price = x.Price,
+					Rating = x.Rating,
+					Format = x.Format,
+					Publisher = _preparedPublishers.First(p => p.Id == x.PublisherId),
+					Author = _preparedAuthors.First(a => a.Id == x.AuthorId)
+				});
 			_preparedUsers = fixture.PreparedUsers;
 			_preparedComments = fixture.PreparedComments.Select(c => new Comment
 			{
 				Id = c.Id,
 				UserId = c.UserId,
+				ProductId = c.ProductId,
 				Content = c.Content,
 				LikesNumber = c.LikesNumber,
 				DislikesNumber = c.DislikesNumber,
@@ -114,7 +143,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			Assert.Equal(expected, actualComment);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedUsers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedProducts);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedComments);
 		}
 
 		[Theory]
@@ -135,7 +165,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			Assert.Equal(expected, actualComment);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedUsers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedProducts);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedComments);
 			Thread.Sleep(2000);
 		}
 
@@ -155,9 +186,9 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualComment);
 
-
 			await IntegrationTestHelper.RecreateTable(_client, _preparedUsers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedProducts);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedComments);
 		}
 
 		[Theory]
@@ -176,7 +207,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			Assert.Null(actualComment);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedUsers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedProducts);
+			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedComments);
 		}
 
 		private IEnumerable<Comment> NewComments =>
@@ -186,6 +218,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				{
 					Id = 6,
 					UserId = 2,
+					ProductId = 3,
 					Content = "Very exciting story",
 					LikesNumber = 11,
 					DislikesNumber = 2,
@@ -195,6 +228,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				{
 					Id = 7,
 					UserId = 3,
+					ProductId = 2,
 					Content = "Recommended by friends, I can not break away",
 					LikesNumber = 3,
 					DislikesNumber = 0,
@@ -204,6 +238,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				{
 					Id = 8,
 					UserId = 4,
+					ProductId = 1,
 					Content = "Not a bad book",
 					LikesNumber = 2,
 					DislikesNumber = 0,
@@ -218,6 +253,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				{
 					Id = 1,
 					UserId = 3,
+					ProductId = 2,
 					Content = "Cool book",
 					LikesNumber = 8,
 					DislikesNumber = 2,
@@ -227,6 +263,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				{
 					Id = 2,
 					UserId = 1,
+					ProductId = 1,
 					Content = "I love this book",
 					LikesNumber = 7,
 					DislikesNumber = 1,
@@ -236,6 +273,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				{
 					Id = 5,
 					UserId = 2,
+					ProductId = 4,
 					Content = "Now i like it",
 					LikesNumber = 13, 
 					DislikesNumber = 2,
