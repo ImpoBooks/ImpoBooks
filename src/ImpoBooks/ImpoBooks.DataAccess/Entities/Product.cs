@@ -18,14 +18,15 @@ namespace ImpoBooks.DataAccess.Entities
 	{
 		[Column("book_id")] public int BookId { get; set; }
 		[Reference(typeof(Book))] public Book Book { get; set; }
-		[Column("comments")] public ICollection<Comment> Comments { get; set; }
+		[Column("comments")] public ICollection<Comment>? Comments { get; set; }
 		public override bool Equals(object obj)
 		{
 			return obj is Product product &&
 			Id == product.Id &&
 			BookId == product.BookId &&
 			Book.Equals(product.Book) &&
-			Comments?.Count == product.Comments?.Count;
+			(Comments?.Any() == product.Comments?.Any() ||
+			Comments.IsNullOrEmpty() == product.Comments?.IsNullOrEmpty());
 		}
 
 		public override int GetHashCode()

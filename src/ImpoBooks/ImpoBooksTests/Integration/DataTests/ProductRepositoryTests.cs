@@ -146,13 +146,11 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Act
 			await _repository.CreateAsync(expected);
 			Product actuaProduct = await _repository.GetByIdAsync(caseId);
-			expected.Book = _preparedBooks.FirstOrDefault(b => b.Id == expected.BookId)!;
 			expected.Book = AddGenres(_preparedBooks.FirstOrDefault(b => b.Id == expected.BookId)!);
 
 			//Assert
 			Assert.Equal(expected, actuaProduct);
 
-			var products = _preparedProducts;
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
