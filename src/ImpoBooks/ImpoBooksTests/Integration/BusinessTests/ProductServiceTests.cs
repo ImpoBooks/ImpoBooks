@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using ImpoBooks.BusinessLogic.Services.Mapping;
 using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.BusinessLogic.Services.Product;
 using ImpoBooks.DataAccess.Entities;
@@ -10,6 +11,7 @@ using Supabase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,7 +41,9 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			_repository = new(fixture.client);
 			_productService = new
 				(
-					_repository!
+					_repository!,
+					new CommentRepository(fixture.client),
+					new UsersRepository(fixture.client)
 				);
 			_preparedPersons = fixture.PreparedPersons;
 			_preparedAuthors = fixture.PreparedAuthors
@@ -132,6 +136,109 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.Equal(expected, result.Value);
 		}
 
+		[Fact]
+		public async Task AddCommentAsync_ReturnProductIdIsZeroError()
+		{
+			//Arrang
+			int id = 0;
+			ProductCommentModel comment = new ProductCommentModel();
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.AddCommentAsync(id, comment);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.ProductIdIsZero, result.FirstError);
+		}
+
+		[Fact]
+		public async Task AddCommentAsync_ReturnProductNotFoundError()
+		{
+			//Arrang
+			int id = 6;
+			ProductCommentModel comment = new ProductCommentModel();
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.AddCommentAsync(id, comment);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.ProductNotFound, result.FirstError);
+		}
+
+		[Fact]
+		public async Task AddCommentAsync_ReturnCommentIsNullError()
+		{
+			//Arrang
+			int id = 2;
+			ProductCommentModel? comment = null;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.AddCommentAsync(id, comment!);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.CommentIsNull, result.FirstError);
+		}
+
+		[Fact]
+		public async Task AddCommentAsync_ReturnCommentContentWrongInfoError()
+		{
+			//Arrang
+			int id = 4;
+			ProductCommentModel comment = new() 
+			{
+				UserId = 3,
+				Content = ""
+			};
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.AddCommentAsync(id, comment!);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.CommentContentWrongInfo, result.FirstError);
+		}
+
+		[Fact]
+		public async Task AddCommentAsync_ReturnUserNotFoundError()
+		{
+			//Arrang
+			int id = 3;
+			ProductCommentModel comment = new()
+			{
+				UserId = 10,
+				Content = "It`s just a comment"
+			};
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.AddCommentAsync(id, comment!);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.UserNotFound, result.FirstError);
+		}
+
+		[Theory]
+		[InlineData(2, 0)]
+		[InlineData(3, 1)]
+		[InlineData(5, 2)]
+		public async Task AddCommentAsync_ReturnExpectedResult(int productId, int caseId)
+		{
+			//Arrang
+			ProductCommentModel comment = PreparedComments[caseId];
+			CommentModel expected = ExpectedComments[caseId];
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.AddCommentAsync(productId, comment!);
+			expected.Id = result.Value.Id;
+
+			//Assert
+			Assert.Equal(expected, result.Value);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+		}
+
 		private IEnumerable<ProductModel> ExpectedProducts =>
 			new ProductModel[]
 			{
@@ -208,6 +315,21 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					Price = 27.99M,
 					Comments = new CommentModel[] {}
 				},
+			};
+
+		private List<ProductCommentModel> PreparedComments =>
+			new List<ProductCommentModel>
+			{
+				new() { UserId = 2, Content = "Not bad", Rating = 4.2M },
+				new() { UserId = 4, Content = "Interesting", Rating = 4.0M },
+				new() { UserId = 3, Content = "Very exciting book", Rating = 4.7M },
+			};
+		private List<CommentModel> ExpectedComments =>
+			new List<CommentModel>
+			{
+				new() { UserName = "Bender", Content = "Not bad", LikesNumber = 0, DislikesNumber = 0, Rating = 4.2M },
+				new() { UserName = "Nikita", Content = "Interesting", LikesNumber = 0, DislikesNumber = 0, Rating = 4.0M },
+				new() { UserName = "Kyle", Content = "Very exciting book", LikesNumber = 0, DislikesNumber = 0, Rating = 4.7M},
 			};
 	}
 }
