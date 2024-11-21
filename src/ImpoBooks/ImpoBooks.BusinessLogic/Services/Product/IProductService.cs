@@ -11,5 +11,6 @@ namespace ImpoBooks.BusinessLogic.Services.Product
 	public interface IProductService
 	{
 		Task<ErrorOr<ProductModel>> GetProductAsync(int productId);
+		Task<ErrorOr<CommentModel>> AddCommentAsync(int productId, ProductCommentModel comment);
 	}
 }
