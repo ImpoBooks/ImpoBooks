@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.BusinessLogic.Services.Product;
+using ImpoBooks.Server.Extensions;
+using ImpoBooks.Server.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImpoBooks.Server.Controllers
@@ -19,7 +21,21 @@ namespace ImpoBooks.Server.Controllers
 			ErrorOr<ProductModel> result = await _productService.GetProductAsync(id);
 
 			return result.Match(
-				books => Results.Ok(books),
+				product => Results.Ok(product),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
+
+		[HttpPost("{id}/comment")]
+		[ProducesResponseType<CommentModel>(StatusCodes.Status201Created)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+		public async Task<IResult> CreateComment(int id, CommentCreateRequest commentRequest) 
+		{
+			ErrorOr<CommentModel> result =
+				await _productService.AddCommentAsync(id, commentRequest.ToModel());
+
+			return result.Match(
+				comment => Results.Ok(comment),
 				errors => Results.BadRequest(errors.First())
 			);
 		}
