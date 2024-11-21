@@ -29,6 +29,23 @@ namespace ImpoBooks.DataAccess.Repositories
 			return product;
 		}
 
+		public async Task<Product> GetByNameAsync(string name)
+		{
+			ModeledResponse<Product> responseP = await _client.From<Product>()
+				.Select("*, Books!inner(*,Publishers(*),Authors!inner(*, Persons!inner(*))))")
+				.Filter("Books.name", Operator.Equals, name)
+				.Get();
+			Product product = responseP.Model;
+			if (product is null) return product;
+
+			ModeledResponse<Comment> responseC = await _client.From<Comment>().Where(c => c.ProductId == product.Id).Get();
+			product.Comments = responseC.Models;
+
+			await SetGenres(product.Book);
+
+			return product;
+		}
+
 		public override async Task<IEnumerable<Product>> GetAllAsync()
 		{
 			ModeledResponse<Product> responseP = await _client.From<Product>().Get();

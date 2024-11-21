@@ -100,6 +100,23 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			Assert.Equal(expected, product);
 		}
 
+		[Theory]
+		[InlineData("The Da Vinci Code", 3)]
+		[InlineData("The Hobbit", 5)]
+		[InlineData("The Secret Garden", 1)]
+		public async Task GetByNameAsync_ReturnExpectedProduct(string name, int caseId)
+		{
+			//Arrange
+			Product expected = _preparedProducts.FirstOrDefault(x => x.Id == caseId)!;
+			expected.Book = AddGenres(expected.Book);
+
+			//Act
+			Product product = await _repository.GetByNameAsync(name);
+
+			//Assert
+			Assert.Equal(expected, product);
+		}
+
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedProductsAmount()
 		{

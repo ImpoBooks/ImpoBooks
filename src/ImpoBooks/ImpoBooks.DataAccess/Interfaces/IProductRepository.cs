@@ -9,5 +9,6 @@ namespace ImpoBooks.DataAccess.Interfaces
 {
 	public interface IProductRepository : IRepository<Product>
 	{
+		Task<Product> GetByNameAsync(string name);
 	}
 }
