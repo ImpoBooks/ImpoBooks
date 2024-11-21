@@ -288,6 +288,55 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
 		}
 
+		[Fact]
+		public async Task IncrementDislikeNumberAsync_ReturnCommentIdIsZeroError()
+		{
+			//Arrang
+			int id = 0;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.IncrementDislikeNumberAsync(id);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.CommentIdIsZero, result.FirstError);
+		}
+
+		[Fact]
+		public async Task IncrementDislikeNumberAsync_ReturnCommentNotFoundError()
+		{
+			//Arrang
+			int id = 9;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.IncrementDislikeNumberAsync(id);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.CommentNotFound, result.FirstError);
+		}
+
+		[Theory]
+		[InlineData(2)]
+		[InlineData(4)]
+		[InlineData(1)]
+		public async Task IncrementDislikeNumberAsync_ReturnExpectedResult(int commentId)
+		{
+			//Arrang
+			CommentModel expected = _preparedComments
+				.FirstOrDefault(c => c.Id == commentId)!
+				.ToCommentModel();
+			expected.DislikesNumber += 1;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.IncrementDislikeNumberAsync(commentId);
+
+			//Assert
+			Assert.Equal(expected, result.Value);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+		}
+
 		private IEnumerable<ProductModel> ExpectedProducts =>
 			new ProductModel[]
 			{
