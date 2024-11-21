@@ -79,5 +79,26 @@ namespace ImpoBooks.BusinessLogic.Services.Product
 
 			return result.ToErrorOr();
 		}
+
+		public async Task<ErrorOr<CommentModel>> IncrementLikeNumberAsync(int commentId)
+		{
+			if (commentId is 0)
+				return ProductErrors.CommentIdIsZero;
+
+			Comment comment = await _commentRepository.GetByIdAsync(commentId);
+			if (comment is null)
+				return ProductErrors.CommentNotFound;
+
+			comment.LikesNumber++;
+			await _commentRepository.UpdateAsync(comment);
+
+			Comment likedComment = await _commentRepository.GetByIdAsync(commentId);
+			if (comment.LikesNumber != likedComment.LikesNumber)
+				return ProductErrors.LikeNotAdded;
+
+			CommentModel result = likedComment.ToCommentModel();
+
+			return result.ToErrorOr();
+		}
 	}
 }

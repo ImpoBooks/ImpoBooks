@@ -12,5 +12,6 @@ namespace ImpoBooks.BusinessLogic.Services.Product
 	{
 		Task<ErrorOr<ProductModel>> GetProductAsync(int productId);
 		Task<ErrorOr<CommentModel>> AddCommentAsync(int productId, ProductCommentModel comment);
+		Task<ErrorOr<CommentModel>> IncrementLikeNumberAsync(int commentId);
 	}
 }
