@@ -14,6 +14,8 @@ namespace ImpoBooks.Server.Extensions
 			services.AddSingleton<IGenreRepository, GenreRepository>();
 			services.AddSingleton<IPersonRepository, PersonRepository>();
 			services.AddSingleton<IPublisherRepository, PublisherRepository>();
+			services.AddSingleton<ICommentRepository, CommentRepository>();
+			services.AddSingleton<IProductRepository, ProductRepository>();
 
 			return services;
 		}

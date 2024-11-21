@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using ImpoBooks.BusinessLogic.Services.Catalog;
 using ImpoBooks.BusinessLogic.Services.Models;
+using ImpoBooks.BusinessLogic.Services.Product;
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Infrastructure.Errors.Catalog;
@@ -21,6 +22,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		private readonly Client _client;
 		private readonly BookRepository _repository;
 		private readonly CatalogService _catalogService;
+		private readonly ProductService _productService;
 		private readonly BookSupabaseFixture _fixture;
 		private IEnumerable<Person> _preparedPersons;
 		private IEnumerable<Author> _preparedAuthors;
@@ -41,7 +43,14 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					new AuthorRepository(fixture.client),
 					new PublisherRepository(fixture.client),
 					new GenreRepository(fixture.client),
-					new BookGenreRepository(fixture.client)
+					new BookGenreRepository(fixture.client),
+					new ProductRepository (fixture.client)
+				);
+			_productService = new
+				(
+					new ProductRepository(fixture.client),
+					new CommentRepository(fixture.client),
+					new UsersRepository(fixture.client)
 				);
 			_preparedPersons = fixture.PreparedPersons;
 			_preparedAuthors = fixture.PreparedAuthors
@@ -164,9 +173,9 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		}
 
 		[Theory]
-		//[InlineData("The Time Catchers")]
-		//[InlineData("Non-existent book")]
-		//[InlineData("Unknown Title")]
+		[InlineData("The Time Catchers")]
+		[InlineData("Non-existent book")]
+		[InlineData("Unknown Title")]
 		[InlineData("Test")]
 		public async Task CreateBookAsync_ReturnExpectedResult(string bookName)
 		{
@@ -176,10 +185,12 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 
 			//Act
 			ErrorOr<CatalogBookModel> result = await _catalogService.CreateBookAsync(book);
+			ErrorOr<ProductModel> product = await _productService.GetProductAsync(result.Value.Id);
 			expected.Id = result.Value.Id;
 
 			//Assert
 			Assert.Equal(expected, result.Value);
+			Assert.NotNull(product.Value);
 
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
 			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);

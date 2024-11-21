@@ -6,6 +6,7 @@ using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Interfaces;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Infrastructure.Errors.Catalog;
+using ImpoBooks.Infrastructure.Errors.Product;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections;
@@ -23,7 +24,8 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 		IAuthorRepository authorRepository,
 		IPublisherRepository publisherRepository,
 		IGenreRepository genreRepository,
-		IBookGenreRepository bookGenreRepository) : ICatalogService
+		IBookGenreRepository bookGenreRepository,
+		IProductRepository productRepository) : ICatalogService
 	{
 		private readonly IBookRepository _bookRepository = bookRepository;
 		private readonly IPersonRepository _personReepository = personRepository;
@@ -31,6 +33,8 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 		private readonly IPublisherRepository _publisherRepository = publisherRepository;
 		private readonly IGenreRepository _genreRepository = genreRepository;
 		private readonly IBookGenreRepository _bookGenreRepository = bookGenreRepository;
+		private readonly IProductRepository _productRepository = productRepository;
+
 
 		public async Task<ErrorOr<IEnumerable<CatalogBookModel>>> GetBooksAsync(FilterModel filterOptions)
 		{
@@ -89,6 +93,10 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 			dbBook = await _bookRepository.GetByNameAsync(book.Name);
 			if (dbBook is null)
 				return CatalogErrors.BookNotFound;
+
+			DataAccess.Entities.Product createdProduct = await CreateBookProduct(dbBook);
+			if (createdProduct is null)
+				return ProductErrors.ProductNotFound;
 
 			CatalogBookModel result = dbBook.ToCatalogBookModel();
 
@@ -192,6 +200,20 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 					GenreId = dbGenre.Id
 				});
 			}
+		}
+
+		private async Task<DataAccess.Entities.Product> CreateBookProduct(Book book)
+		{
+			await _productRepository.CreateAsync
+			(
+				new DataAccess.Entities.Product() 
+				{ 
+					Id = book.Id,
+					BookId = book.Id
+				}
+			);
+
+			return await _productRepository.GetByNameAsync(book.Name);
 		}
 	}
 }
