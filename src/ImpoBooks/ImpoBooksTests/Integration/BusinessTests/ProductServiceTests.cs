@@ -239,6 +239,55 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
 		}
 
+		[Fact]
+		public async Task IncrementLikeNumberAsync_ReturnCommentIdIsZeroError()
+		{
+			//Arrang
+			int id = 0;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.IncrementLikeNumberAsync(id);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.CommentIdIsZero, result.FirstError);
+		}
+
+		[Fact]
+		public async Task IncrementLikeNumberAsync_ReturnCommentNotFoundError()
+		{
+			//Arrang
+			int id = 8;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.IncrementLikeNumberAsync(id);
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(ProductErrors.CommentNotFound, result.FirstError);
+		}
+
+		[Theory] 
+		[InlineData(5)]
+		[InlineData(3)]
+		[InlineData(1)]
+		public async Task IncrementLikeNumberAsync_ReturnExpectedResult(int commentId)
+		{
+			//Arrang
+			CommentModel expected = _preparedComments
+				.FirstOrDefault(c => c.Id == commentId)!
+				.ToCommentModel();
+			expected.LikesNumber += 1;
+
+			//Act
+			ErrorOr<CommentModel> result = await _productService.IncrementLikeNumberAsync(commentId);
+
+			//Assert
+			Assert.Equal(expected, result.Value);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+		}
+
 		private IEnumerable<ProductModel> ExpectedProducts =>
 			new ProductModel[]
 			{
