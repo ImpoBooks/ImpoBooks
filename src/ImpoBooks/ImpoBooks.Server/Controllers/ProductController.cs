@@ -39,5 +39,33 @@ namespace ImpoBooks.Server.Controllers
 				errors => Results.BadRequest(errors.First())
 			);
 		}
+
+		[HttpPut("{id}/comment/like")]
+		[ProducesResponseType<CommentModel>(StatusCodes.Status200OK)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+		public async Task<IResult> LikeComment([FromBody] int commentId)
+		{
+			ErrorOr<CommentModel> result =
+				await _productService.IncrementLikeNumberAsync(commentId);
+
+			return result.Match(
+				comment => Results.Ok(comment),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
+
+		[HttpPut("{id}/comment/dislike")]
+		[ProducesResponseType<CommentModel>(StatusCodes.Status200OK)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
+		public async Task<IResult> DislikeComment([FromBody] int commentId)
+		{
+			ErrorOr<CommentModel> result =
+				await _productService.IncrementDislikeNumberAsync(commentId);
+
+			return result.Match(
+				comment => Results.Ok(comment),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
 	}
 }
