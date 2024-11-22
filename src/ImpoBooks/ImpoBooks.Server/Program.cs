@@ -17,6 +17,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration.AddJsonFile("appsettings.json", true, true);
         builder.Services.AddRepository();
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IUsersRepository, UsersRepository>();
