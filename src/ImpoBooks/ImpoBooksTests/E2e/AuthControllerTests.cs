@@ -8,6 +8,7 @@ using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.Server.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -22,10 +23,11 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
     {
         _client = factory.WithWebHostBuilder(builder =>
         {
-            builder.ConfigureServices(services =>
+            builder.ConfigureAppConfiguration((context, config) =>
             {
-                services.AddSingleton(_ => _authServiceMock.Object);
+                config.AddJsonFile("appsettings.Development.json", optional: false);
             });
+            builder.ConfigureServices(services => { services.AddSingleton(_ => _authServiceMock.Object); });
         }).CreateClient();
     }
 
@@ -95,7 +97,7 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(problemDetails);
         Assert.NotNull(problemDetails.Extensions["errors"]);
     }
-    
+
 
     [Fact]
     public async Task Login_ShouldReturnOk_WhenCredentialsAreValid()
@@ -108,7 +110,6 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         _authServiceMock.Setup(service => service.LoginAsync(request.Email, request.Password)).ReturnsAsync("jwt");
-
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/auth/login", request);
@@ -161,7 +162,7 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         responseContent.Should().Contain("User.WrongPassword");
     }
-    
+
     [Fact]
     public async Task Login_ShouldReturnBadRequest_WhenUserDoesNotExist()
     {
@@ -174,7 +175,7 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
         _authServiceMock.Setup(s => s.LoginAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(UserErrors.NotFoundByEmail);
-        
+
         // Act
         var response = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -195,7 +196,7 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
             new object[] { "test@test.com", string.Empty, "StrongPassword123" },
             new object[] { "test@test.com", "John Doe", string.Empty },
         };
-    
+
     public static IEnumerable<object[]> InvalidLoginRequests =>
         new List<object[]>
         {
