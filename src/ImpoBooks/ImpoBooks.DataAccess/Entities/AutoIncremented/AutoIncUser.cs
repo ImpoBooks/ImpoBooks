@@ -13,5 +13,7 @@ namespace ImpoBooks.DataAccess.Entities.AutoIncremented
 		[Column("name")] public string Name { get; set; }
 		[Column("email")] public string Email { get; set; }
 		[Column("hashed_password")] public string HashedPassword { get; set; }
+		[Column("role_id")] public int RoleId { get; set; }
+		[Reference(typeof(Role))] public Role Role { get; set; }
 	}
 }

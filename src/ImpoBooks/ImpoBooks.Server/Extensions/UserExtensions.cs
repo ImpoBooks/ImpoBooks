@@ -17,7 +17,8 @@ public static class UserExtensions
         {
             Email = request.Email,
             Name = request.FullName,
-            HashedPassword = _passwordHasher.Generate(request.Password)
+            HashedPassword = _passwordHasher.Generate(request.Password),
+            RoleId = 2, //Customer role
         };
     }
 
