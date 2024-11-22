@@ -24,7 +24,6 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         if (registerResult.IsError)
             return Results.BadRequest(registerResult.Errors.First());
-        else
             loginResult = await _authService.LoginAsync(registerUserRequest.Email, registerUserRequest.Password);
 
         string token = loginResult.Value;
