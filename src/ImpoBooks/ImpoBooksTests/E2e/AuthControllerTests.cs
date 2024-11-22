@@ -27,7 +27,10 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
             {
                 config.AddJsonFile("appsettings.Development.json", optional: false);
             });
-            builder.ConfigureServices(services => { services.AddSingleton(_ => _authServiceMock.Object); });
+            builder.ConfigureServices(services =>
+            {
+                services.AddSingleton(_ => _authServiceMock.Object);
+            });
         }).CreateClient();
     }
 
