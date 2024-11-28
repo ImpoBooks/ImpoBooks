@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using ImpoBooks.BusinessLogic.Services.Catalog;
+using ImpoBooks.BusinessLogic.Services.Mapping;
 using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.BusinessLogic.Services.Product;
 using ImpoBooks.DataAccess.Entities;
@@ -139,6 +140,35 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 
 			//Act
 			ErrorOr<IEnumerable<CatalogBookModel>> result = await _catalogService.GetBooksAsync(filter);
+
+			//Assert
+			Assert.Equal(expected, result.Value);
+		}
+
+		[Fact]
+		public async Task GetGenresAsync_ReturnGenresNotFoundError()
+		{
+			//Arrang
+
+			//Act
+			await IntegrationTestHelper.ClearTable<Genre>(_client);
+			ErrorOr<IEnumerable<GenreModel>> result = await _catalogService.GetGenresAsync();
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.GenresNotFound, result.FirstError);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+		}
+
+		[Fact]
+		public async Task GetGenresAsync_ReturnCorrectResult()
+		{
+			//Arrang
+			IEnumerable<GenreModel> expected = _preparedGenres.Select(g => g.ToGenreModel());
+
+			//Act
+			ErrorOr<IEnumerable<GenreModel>> result = await _catalogService.GetGenresAsync();
 
 			//Assert
 			Assert.Equal(expected, result.Value);
