@@ -29,6 +29,21 @@ namespace ImpoBooks.Server.Controllers
 			);
 		}
 
+
+		[HttpGet("/genres")]
+		[ProducesResponseType<IEnumerable<GenreModel>>(StatusCodes.Status200OK)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status404NotFound)]
+		public async Task<IResult> GetGenres()
+		{
+			ErrorOr<IEnumerable<GenreModel>> result =
+				await _catalogService.GetGenresAsync();
+
+			return result.Match(
+				genres => Results.Ok(genres),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
+
 		[HttpPost("admin/books/create")]
 		[ProducesResponseType<CatalogBookModel>(StatusCodes.Status201Created)]
 		[ProducesResponseType<List<Error>>(StatusCodes.Status400BadRequest)]
