@@ -14,6 +14,6 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 		Task<ErrorOr<CatalogBookModel>> CreateBookAsync(BookModel book);
 		Task<ErrorOr<CatalogBookModel>> UpdateBookAsync(int bookId, BookModel book);
 		Task<ErrorOr<Success>> DeleteBookAsync(int bookId);
-
+		Task<ErrorOr<IEnumerable<GenreModel>>> GetGenresAsync();
 	}
 }
