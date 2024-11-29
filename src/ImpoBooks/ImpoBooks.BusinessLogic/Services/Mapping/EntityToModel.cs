@@ -90,5 +90,18 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				ExpensesList = source.ExpensesList
 			};
 		}
+
+		public static AuthorModel ToAuthorModel(this Author source)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append(source.Person.Name)
+				.Append(" ")
+				.Append(source.Person.Surname);
+
+			return new AuthorModel()
+			{
+				Name = sb.ToString()
+			};
+		}
 	}
 }
