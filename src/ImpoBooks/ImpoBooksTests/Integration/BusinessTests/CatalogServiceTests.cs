@@ -175,6 +175,37 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		}
 
 		[Fact]
+		public async Task GetAuthorsAsync_ReturnGenresNotFoundError()
+		{
+			//Arrang
+
+			//Act
+			await IntegrationTestHelper.ClearTable<Author>(_client);
+			ErrorOr<IEnumerable<AuthorModel>> result = await _catalogService.GetAuthorsAsync();
+
+			//Assert
+			Assert.True(result.IsError);
+			Assert.Equal(CatalogErrors.AuthorsNotFound, result.FirstError);
+
+			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+		}
+
+		[Fact]
+		public async Task GetAuthorsAsync_ReturnCorrectResult()
+		{
+			//Arrang
+			IEnumerable<AuthorModel> expected = _preparedAuthors.Select(g => g.ToAuthorModel());
+
+			//Act
+			ErrorOr<IEnumerable<AuthorModel>> result = await _catalogService.GetAuthorsAsync();
+
+			//Assert
+			Assert.Equal(expected, result.Value);
+		}
+
+		[Fact]
 		public async Task CreateBookAsync_ReturnBookIsNullError()
 		{
 			//Arrange
