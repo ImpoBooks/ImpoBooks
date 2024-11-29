@@ -16,6 +16,7 @@ namespace ImpoBooks.BusinessLogic.Services.Models
 		public string ReleaseDate { get; set; }
 		public decimal Rating { get; set; }
 		public decimal Price { get; set; }
+		public string ImageUrl { get; set; }
 
 		public override bool Equals(object obj)
 		{

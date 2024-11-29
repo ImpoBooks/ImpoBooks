@@ -81,7 +81,8 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 				ReleaseDate = book.ReleaseDate,
 				Price = book.Price,
 				Rating = book.Rating,
-				Format = "Electronic"
+				Format = "Electronic",
+				ImageUrl = book.ImageUrl
 			});
 
 			dbBook = await _bookRepository.GetByNameAsync(book.Name);
@@ -183,6 +184,7 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 			if (!bookModel.Name.IsNullOrEmpty()) target.Name = bookModel.Name;
 			if (!bookModel.Description.IsNullOrEmpty()) target.Description = bookModel.Description;
 			if (!bookModel.ReleaseDate.IsNullOrEmpty()) target.ReleaseDate = bookModel.ReleaseDate;
+			if (!bookModel.ImageUrl.IsNullOrEmpty()) target.ImageUrl = bookModel.ImageUrl;
 			if (bookModel.Price != 0) target.Price = bookModel.Price;
 			if (bookModel.Rating != 0) target.Rating = bookModel.Rating;
 			target.AuthorId = author.Id;

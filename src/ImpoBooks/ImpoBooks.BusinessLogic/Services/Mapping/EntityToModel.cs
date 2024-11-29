@@ -31,6 +31,7 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				ReleaseDate = source.ReleaseDate,
 				Rating = source.Rating,
 				Price = source.Price,
+				ImageUrl = source.ImageUrl
 			};
 		}
 
@@ -69,6 +70,7 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				ReleaseDate = source.Book.ReleaseDate,
 				Rating = source.Book.Rating,
 				Price = source.Book.Price,
+				ImageUrl = source.Book.ImageUrl,
 				Comments = source.Comments.Select(c => c.ToCommentModel())
 			};
 		}

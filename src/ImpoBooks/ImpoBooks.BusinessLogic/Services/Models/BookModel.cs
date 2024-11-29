@@ -14,7 +14,7 @@ namespace ImpoBooks.BusinessLogic.Services.Models
 		public string Genres { get; set; }
 		public string Publisher { get; set; }
 		public string ReleaseDate { get; set; }
-		public string Image { get; set; }
+		public string ImageUrl { get; set; }
 		public decimal Rating { get; set; }
 		public decimal Price { get; set; }
 	}

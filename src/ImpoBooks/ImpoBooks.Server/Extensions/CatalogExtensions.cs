@@ -30,7 +30,7 @@ namespace ImpoBooks.Server.Extensions
 				Genres = source.Genre,
 				Publisher = source.Publisher,
 				ReleaseDate = source.ReleaseDate,
-				Image = source.Image,
+				ImageUrl = source.ImageUrl,
 				Rating = 0,
 				Price = source.Price,
 			};
@@ -46,7 +46,7 @@ namespace ImpoBooks.Server.Extensions
 				Genres = source.Genre,
 				Publisher = source.Publisher,
 				ReleaseDate = source.ReleaseDate,
-				Image = source.Image,
+				ImageUrl = source.ImageUrl,
 				Rating = 0,
 				Price = source.Price,
 			};
