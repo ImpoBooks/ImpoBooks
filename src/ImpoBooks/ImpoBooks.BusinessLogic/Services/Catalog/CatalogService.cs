@@ -144,15 +144,23 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 
 		public async Task<ErrorOr<IEnumerable<GenreModel>>> GetGenresAsync()
 		{
-			IEnumerable<Genre> dbGenre = await _genreRepository.GetAllAsync();
-			if (dbGenre.IsNullOrEmpty())
+			IEnumerable<Genre> dbGenres = await _genreRepository.GetAllAsync();
+			if (dbGenres.IsNullOrEmpty())
 				return CatalogErrors.GenresNotFound;
 
-			IEnumerable<GenreModel> result = dbGenre.Select(g => g.ToGenreModel());
+			IEnumerable<GenreModel> result = dbGenres.Select(g => g.ToGenreModel());
 			return result.ToErrorOr();
 		}
 
+		public async Task<ErrorOr<IEnumerable<AuthorModel>>> GetAuthorsAsync()
+		{
+			IEnumerable<Author> dbAuthors = await _authorRepository.GetAllAsync();
+			if (dbAuthors.IsNullOrEmpty())
+				return CatalogErrors.AuthorsNotFound;
 
+			IEnumerable<AuthorModel> result = dbAuthors.Select(g => g.ToAuthorModel());
+			return result.ToErrorOr();
+		}
 
 		private async Task<Author> GetOrCreateAuthorAsync(BookModel bookModel)
 		{
