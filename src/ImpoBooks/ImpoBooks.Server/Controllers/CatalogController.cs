@@ -30,7 +30,7 @@ namespace ImpoBooks.Server.Controllers
 		}
 
 
-		[HttpGet("/genres")]
+		[HttpGet("genres")]
 		[ProducesResponseType<IEnumerable<GenreModel>>(StatusCodes.Status200OK)]
 		[ProducesResponseType<List<Error>>(StatusCodes.Status404NotFound)]
 		public async Task<IResult> GetGenres()
@@ -40,6 +40,20 @@ namespace ImpoBooks.Server.Controllers
 
 			return result.Match(
 				genres => Results.Ok(genres),
+				errors => Results.BadRequest(errors.First())
+			);
+		}
+
+		[HttpGet("authors")]
+		[ProducesResponseType<IEnumerable<AuthorModel>>(StatusCodes.Status200OK)]
+		[ProducesResponseType<List<Error>>(StatusCodes.Status404NotFound)]
+		public async Task<IResult> GetAuthors()
+		{
+			ErrorOr<IEnumerable<AuthorModel>> result =
+				await _catalogService.GetAuthorsAsync();
+
+			return result.Match(
+				authors => Results.Ok(authors),
 				errors => Results.BadRequest(errors.First())
 			);
 		}
