@@ -16,6 +16,6 @@ namespace ImpoBooks.BusinessLogic.Services.Models
 		public string ZipCode { get; set; }
 		public string Country { get; set; }
 		public decimal TotalSum { get; set; }
-		public ICollection<OrderProductModel> Products { get; set; }
+		public IEnumerable<OrderProductModel> Products { get; set; }
 	}
 }
