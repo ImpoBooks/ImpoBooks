@@ -1,5 +1,6 @@
 using ImpoBooks.BusinessLogic.Extensions;
 using ImpoBooks.BusinessLogic.Services.Auth;
+using ImpoBooks.BusinessLogic.Services.Cart;
 using ImpoBooks.BusinessLogic.Services.Catalog;
 using ImpoBooks.BusinessLogic.Services.Product;
 using ImpoBooks.DataAccess;
@@ -23,7 +24,8 @@ public class Program
         builder.Services.AddSingleton<IUsersRepository, UsersRepository>();
         builder.Services.AddSingleton<ICatalogService, CatalogService>();
         builder.Services.AddSingleton<IProductService, ProductService>();
-        builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+		builder.Services.AddSingleton<ICartService, CartService>();
+		builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
         builder.Services.AddSingleton<IDbInitializer, DbInitializer>();
         builder.Services.AddSupabaseClient(builder.Configuration);
