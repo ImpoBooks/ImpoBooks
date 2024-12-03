@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using ImpoBooks.BusinessLogic.Services.Mapping;
 using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Interfaces;
@@ -43,7 +44,7 @@ namespace ImpoBooks.BusinessLogic.Services.Cart
 			return Result.Success;
 		}
 
-		public async Task<ErrorOr<Order>> SaveOrderAsync(OrderModel orderModel)
+		public async Task<ErrorOr<OrderCheckModel>> SaveOrderAsync(OrderModel orderModel)
 		{
 			if (orderModel is null)
 				return CartErrors.OrderModelIsNull;
@@ -60,7 +61,9 @@ namespace ImpoBooks.BusinessLogic.Services.Cart
 			if (dbOrder is null)
 				return CartErrors.OrderNotFound;
 
-			return dbOrder.ToErrorOr()!;
+			OrderCheckModel result = dbOrder.ToOrderCheckModel();
+
+			return result.ToErrorOr()!;
 		}
 
 		private async Task<Order> CreateNewOrder(OrderModel orderModel, int orderCode)

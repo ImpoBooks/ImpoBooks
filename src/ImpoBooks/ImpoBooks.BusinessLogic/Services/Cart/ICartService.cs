@@ -13,6 +13,6 @@ namespace ImpoBooks.BusinessLogic.Services.Cart
 	{
 		Task<ErrorOr<Success>> CheckAvailabilityAsync(IEnumerable<OrderProductModel> products);
 		Task<ErrorOr<Success>> SendToPaymentServiceAsync(CustomerRequisitesModel requisites);
-		Task<ErrorOr<Order>> SaveOrderAsync(OrderModel orderModel);
+		Task<ErrorOr<OrderCheckModel>> SaveOrderAsync(OrderModel orderModel);
 	}
 }

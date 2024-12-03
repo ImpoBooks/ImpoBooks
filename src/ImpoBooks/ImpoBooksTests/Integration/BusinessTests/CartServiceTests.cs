@@ -118,7 +118,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			OrderModel? orderModel = null;
 
 			//Act
-			ErrorOr<Order> result = await _cartService.SaveOrderAsync(orderModel);
+			ErrorOr<OrderCheckModel> result = await _cartService.SaveOrderAsync(orderModel);
 
 			//Assert
 			Assert.True(result.IsError);
@@ -133,18 +133,18 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		{
 			//Arrang
 			OrderModel orderModel = _preparedOrderModels[caseId];
-			Order expected = ExpectedOrders[caseId];
+			OrderCheckModel expected = ExpectedOrders[caseId];
 			expected.OrderCode = _cartService.GenerateOrderCode(orderModel);
 
 			//Act
-			ErrorOr<Order> result = await _cartService.SaveOrderAsync(orderModel);
+			ErrorOr<OrderCheckModel> result = await _cartService.SaveOrderAsync(orderModel);
 
 			//Assert
 			Assert.Equal(expected, result.Value);
 		}
 
-		public List<Order> ExpectedOrders =>
-			new List<Order>
+		public List<OrderCheckModel> ExpectedOrders =>
+			new List<OrderCheckModel>
 			{
 				new()
 				{
