@@ -31,9 +31,7 @@ namespace ImpoBooks.DataAccess.Entities
 		public override bool Equals(object obj)
 		{
 			return obj is Order order &&
-			Id == order.Id &&
 			OrderCode == order.OrderCode &&
-			CreatedAt == order.CreatedAt &&
 			FirstName == order.FirstName &&
 			LastName == order.LastName &&
 			Email == order.Email &&

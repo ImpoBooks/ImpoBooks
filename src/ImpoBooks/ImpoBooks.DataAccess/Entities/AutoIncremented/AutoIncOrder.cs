@@ -11,7 +11,7 @@ namespace ImpoBooks.DataAccess.Entities.AutoIncremented
 	public class AutoIncOrder : BaseModelAutoIncExtended
 	{
 		[Column("order_code")] public int OrderCode { get; set; }
-		[Column("order_code")] public string CreatedAt { get; set; }
+		[Column("created_at")] public string CreatedAt { get; set; }
 		[Column("first_name")] public string FirstName { get; set; }
 		[Column("last_name")] public string LastName { get; set; }
 		[Column("email")] public string Email { get; set; }
