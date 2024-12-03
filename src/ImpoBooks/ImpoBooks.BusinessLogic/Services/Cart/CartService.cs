@@ -91,7 +91,9 @@ namespace ImpoBooks.BusinessLogic.Services.Cart
 			using (var sha256 = SHA256.Create())
 			{
 				var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(serializedObject));
-				return BitConverter.ToInt32(hashBytes);
+				var hashCode = BitConverter.ToInt32(hashBytes, 0);
+
+				return hashCode & int.MaxValue;
 			}
 		}
 
