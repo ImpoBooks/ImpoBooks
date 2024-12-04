@@ -156,7 +156,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					ZipCode = "12345",
 					Country = "USA",
 					TotalSum = 100.97m,
-					ExpensesList = "The Secret Garden x2: 51,98\r\nThe Da Vinci Code x1: 38,99\r\n"
+					ExpensesList = $"The Secret Garden x2: {51.98m}{Environment.NewLine}The Da Vinci Code x1: {38.99m}{Environment.NewLine}"
 				},
 				new()
 				{
@@ -168,7 +168,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					ZipCode = "54321",
 					Country = "Canada",
 					TotalSum = 162.95m,
-					ExpensesList = "The Secret Garden x1: 25,99\r\nMurder on the Orient Express x1: 19,99\r\nThe Da Vinci Code x3: 116,97\r\n"
+					ExpensesList = $"The Secret Garden x1: {25.99m}{Environment.NewLine}Murder on the Orient Express x1: {19.99m}{Environment.NewLine}The Da Vinci Code x3: {116.97m}{Environment.NewLine}"
 				},
 				new()
 				{
@@ -180,7 +180,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					ZipCode = "67890",
 					Country = "UK",
 					TotalSum = 199.90m,
-					ExpensesList = "Murder on the Orient Express x10: 199,90\r\n"
+					ExpensesList = $"Murder on the Orient Express x10: {199.90m}{Environment.NewLine}"
 				}
 			};
 	}
