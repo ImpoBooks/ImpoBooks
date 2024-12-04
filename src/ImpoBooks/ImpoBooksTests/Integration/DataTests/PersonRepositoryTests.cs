@@ -1,27 +1,18 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Tests.Integration.Fixtures;
-using Microsoft.Extensions.Configuration;
-using Supabase;
-using System.Linq;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Sdk;
+using ImpoBooks.Tests.Integration.Seeds;
 
 namespace ImpoBooks.Tests.Integration.DataTests
 {
 	[Collection("Integration Tests Collection")]
 	public class PersonRepositoryTests : IClassFixture<PersonSupabaseFixture>
 	{
-		private readonly Client _client;
 		private readonly PersonRepository _repository;
-		private IEnumerable<Person> _preparedPersons;
 
 		public PersonRepositoryTests(PersonSupabaseFixture fixture)
 		{
-			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedPersons = fixture.PreparedPersons;
 		}
 
 		[Theory]
@@ -37,10 +28,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[InlineData(10)]
 		public async Task GetByIdAsync_ReturnExpectedPerson(int Id)
 		{
-			Thread.Sleep(500);
-
 			//Arrange
-			Person expected = _preparedPersons.FirstOrDefault(x => x.Id == Id)!;
+			Person expected = PersonSeeder.PreparedPersons.FirstOrDefault(x => x.Id == Id)!;
 
 			//Act
 			Person person = await _repository.GetByIdAsync(expected.Id);
@@ -55,10 +44,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[InlineData("Tyler", "Durden")]
 		public async Task GetByFullNameAsync_ReturnExpectedPerson(string name, string surname)
 		{
-			Thread.Sleep(500);
-
 			//Arrange
-			IEnumerable<Person> expected = _preparedPersons.Where(x => x.Name == name && x.Surname == surname)!;
+			IEnumerable<Person> expected = PersonSeeder.PreparedPersons.Where(x => x.Name == name && x.Surname == surname)!;
 
 			//Act
 			IEnumerable<Person> person = await _repository.GetByFullNameAsync(name, surname);
@@ -70,10 +57,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedPersonsAmount()
 		{
-			Thread.Sleep(500);
-
 			//Arrange
-			int expected = _preparedPersons.Count();
+			int expected = PersonSeeder.PreparedPersons.Count();
 
 			//Act
 			IEnumerable<Person> persons = await _repository.GetAllAsync();
@@ -85,10 +70,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		[Fact]
 		public async Task GetAllAsync_ReturnExpectedPersonsContent()
 		{
-			Thread.Sleep(500);
-
 			//Arrange
-			IEnumerable<Person> expected = _preparedPersons;
+			IEnumerable<Person> expected = PersonSeeder.PreparedPersons;
 
 			//Act
 			IEnumerable<Person> persons = await _repository.GetAllAsync();
@@ -114,7 +97,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RefreshDb(PersonSeeder.Seed);
 		}
 
 		[Theory]
@@ -134,7 +117,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RefreshDb(PersonSeeder.Seed);
 		}
 
 		[Theory]
@@ -145,7 +128,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task DeleteAsync_RemovePersonFromDb(int caseId)
 		{
 			//Arrange
-			Person person = _preparedPersons.FirstOrDefault(x => x.Id == caseId)!;
+			Person person = PersonSeeder.PreparedPersons.FirstOrDefault(x => x.Id == caseId)!;
 
 			//Act
 			await _repository.DeleteAsync(person);
@@ -154,7 +137,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RefreshDb(PersonSeeder.Seed);
 		}
 
 		[Theory]
@@ -173,7 +156,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualPerson);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
+			await IntegrationTestHelper.RefreshDb(PersonSeeder.Seed);
 		}
 
 		private IEnumerable<Person> NewPersons =>
