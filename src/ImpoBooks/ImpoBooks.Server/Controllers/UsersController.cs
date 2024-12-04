@@ -61,7 +61,7 @@ namespace ImpoBooks.Server.Controllers
                 ErrorOr<string> token = _authService.GenerateJwt(result.Value);
                 if (!token.IsError)
                 {
-                    HttpContext.Response.Cookies.Delete("necessary-cookies");
+                    DeleteCookie("necessary-cookies");
                     AppendCookie("necessary-cookies", token.Value);
                 }
             }
@@ -82,7 +82,7 @@ namespace ImpoBooks.Server.Controllers
             if (userId == null || userId <= 0) return Results.Unauthorized();
 
             var result = await _usersService.DeleteUserAsync(userId);
-            HttpContext.Response.Cookies.Delete("necessary-cookies");
+            DeleteCookie("necessary-cookies");
 
             return result.Match(
                 _ => Results.NoContent(),
@@ -93,6 +93,17 @@ namespace ImpoBooks.Server.Controllers
         private void AppendCookie(string key, string token)
         {
             HttpContext.Response.Cookies.Append(key, token,
+                new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                });
+        }
+        
+        private void DeleteCookie(string key)
+        {
+            HttpContext.Response.Cookies.Delete(key,
                 new CookieOptions()
                 {
                     HttpOnly = true,
