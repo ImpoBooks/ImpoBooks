@@ -93,6 +93,14 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 			};
 		}
 
+		public static GenreModel ToGenreModel(this Genre source)
+		{
+			return new GenreModel()
+			{
+				Name = source.Name
+			};
+		}
+
 		public static AuthorModel ToAuthorModel(this Author source)
 		{
 			StringBuilder sb = new StringBuilder();
