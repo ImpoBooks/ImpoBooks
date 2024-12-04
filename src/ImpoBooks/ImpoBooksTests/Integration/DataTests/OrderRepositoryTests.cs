@@ -2,6 +2,7 @@
 using ImpoBooks.DataAccess.Interfaces;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Tests.Integration.Fixtures;
+using ImpoBooks.Tests.Integration.Seeds;
 using Supabase;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,11 @@ namespace ImpoBooks.Tests.Integration.DataTests
 	[Collection("Integration Tests Collection")]
 	public class OrderRepositoryTests : IClassFixture<OrderSupabeseFixture>
 	{
-		private readonly Client _client;
 		private readonly OrderRepository _repository;
-		private IEnumerable<Order> _preparedOrders;
 
 		public OrderRepositoryTests(OrderSupabeseFixture fixture)
 		{
-			_client = fixture.client;
-			_repository = new(_client);
-			_preparedOrders = fixture.PreparedOrders;
+			_repository = new(fixture.client);
 		}
 
 		[Theory]
@@ -33,7 +30,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetByIdAsync_ReturnExpectedOrder(int Id)
 		{
 			//Arrange
-			Order expected = _preparedOrders.FirstOrDefault(x => x.Id == Id)!;
+			Order expected = OrderSeeder.PreparedOrders.FirstOrDefault(x => x.Id == Id)!;
 
 			//Act
 			Order order = await _repository.GetByIdAsync(expected.Id);
@@ -49,7 +46,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetByOrderCodeAsync_ReturnExpectedOrder(int code)
 		{
 			//Arrange
-			Order expected = _preparedOrders.FirstOrDefault(x => x.OrderCode == code)!;
+			Order expected = OrderSeeder.PreparedOrders.FirstOrDefault(x => x.OrderCode == code)!;
 
 			//Act
 			Order order = await _repository.GetByOrderCodeAsync(code);
@@ -62,7 +59,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetAllAsync_ReturnExpectedOrdersAmount()
 		{
 			//Arrange
-			int expected = _preparedOrders.Count();
+			int expected = OrderSeeder.PreparedOrders.Count();
 
 			//Act
 			IEnumerable<Order> orders = await _repository.GetAllAsync();
@@ -77,7 +74,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			Thread.Sleep(500);
 
 			//Arrange
-			IEnumerable<Order> expected = _preparedOrders;
+			IEnumerable<Order> expected = OrderSeeder.PreparedOrders;
 
 			//Act
 			IEnumerable<Order> orders = await _repository.GetAllAsync();
@@ -102,7 +99,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualOrder);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedOrders);
+			await IntegrationTestHelper.RefreshDb(OrderSeeder.Seed);
 		}
 
 		[Theory]
@@ -112,7 +109,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task DeleteAsync_RemoveOrderFromDb(int caseId)
 		{
 			//Arrange
-			Order order = _preparedOrders.FirstOrDefault(x => x.Id == caseId)!;
+			Order order = OrderSeeder.PreparedOrders.FirstOrDefault(x => x.Id == caseId)!;
 
 			//Act
 			await _repository.DeleteAsync(order);
@@ -121,7 +118,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualOrder);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedOrders);
+			await IntegrationTestHelper.RefreshDb(OrderSeeder.Seed);
 		}
 
 		[Theory]
@@ -139,7 +136,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualOrder);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedOrders);
+			await IntegrationTestHelper.RefreshDb(OrderSeeder.Seed);
 		}
 
 		private IEnumerable<Order> NewOrders =>

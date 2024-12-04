@@ -79,7 +79,7 @@ namespace ImpoBooks.Tests.Integration
 		{
 			var connection = await ConnectToDb();
 
-			var command = new NpgsqlCommand("TRUNCATE TABLE \"Persons\", \"Publishers\", \"Users\", \"Genres\" CASCADE", connection);
+			var command = new NpgsqlCommand("TRUNCATE TABLE \"Persons\", \"Publishers\", \"Users\", \"Genres\", \"Orders\" CASCADE", connection);
 			command.CommandType = System.Data.CommandType.Text;
 
 			await command.ExecuteNonQueryAsync();
