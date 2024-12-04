@@ -4,40 +4,21 @@ using ImpoBooks.BusinessLogic.Services.Models;
 using ImpoBooks.BusinessLogic.Services.Product;
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
-using ImpoBooks.Infrastructure.Errors.Catalog;
 using ImpoBooks.Infrastructure.Errors.Product;
 using ImpoBooks.Tests.Integration.Fixtures;
-using Supabase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using ImpoBooks.Tests.Integration.Seeds;
 
 namespace ImpoBooks.Tests.Integration.BusinessTests
 {
 	[Collection("Integration Tests Collection")]
 	public class ProductServiceTests : IClassFixture<ProductSupabaseFixture>
 	{
-		private readonly ProductSupabaseFixture _fixture;
-		private readonly Client _client;
 		private readonly ProductService _productService;
 		private readonly ProductRepository _repository;
-		private IEnumerable<Person> _preparedPersons;
-		private IEnumerable<Author> _preparedAuthors;
-		private IEnumerable<Genre> _preparedGenres;
-		private IEnumerable<Publisher> _preparedPublishers;
-		private IEnumerable<Book> _preparedBooks;
-		private IEnumerable<BookGenre> _preparedBookGenreRelations;
-		private IEnumerable<User> _preparedUsers;
 		private IEnumerable<Comment> _preparedComments;
-		private IEnumerable<Product> _preparedProducts;
 
 		public ProductServiceTests(ProductSupabaseFixture fixture)
 		{
-			_fixture = fixture;
-			_client = fixture.client;
 			_repository = new(fixture.client);
 			_productService = new
 				(
@@ -45,34 +26,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					new CommentRepository(fixture.client),
 					new UsersRepository(fixture.client)
 				);
-			_preparedPersons = fixture.PreparedPersons;
-			_preparedAuthors = fixture.PreparedAuthors
-				.Select(x => new Author()
-				{
-					Id = x.Id,
-					PersonId = x.PersonId,
-					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
-				});
-			_preparedGenres = fixture.PreparedGenres;
-			_preparedBookGenreRelations = fixture.PreparedBookGenreRelations;
-			_preparedPublishers = fixture.PreparedPublishers;
-			_preparedBooks = fixture.PreparedBooks
-				.Select(x => new Book()
-				{
-					Id = x.Id,
-					PublisherId = x.PublisherId,
-					AuthorId = x.AuthorId,
-					Name = x.Name,
-					Description = x.Description,
-					ReleaseDate = x.ReleaseDate,
-					Price = x.Price,
-					Rating = x.Rating,
-					Format = x.Format,
-					Publisher = _preparedPublishers.First(p => p.Id == x.PublisherId),
-					Author = _preparedAuthors.First(a => a.Id == x.AuthorId)
-				});
-			_preparedUsers = fixture.PreparedUsers;
-			_preparedComments = fixture.PreparedComments.Select(c => new Comment
+			_preparedComments = CommentSeeder.PreparedComments.Select(c => new Comment
 			{
 				Id = c.Id,
 				UserId = c.UserId,
@@ -81,14 +35,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 				LikesNumber = c.LikesNumber,
 				DislikesNumber = c.DislikesNumber,
 				Rating = c.Rating,
-				User = _preparedUsers.FirstOrDefault(u => u.Id == c.UserId)!
-			});
-			_preparedProducts = fixture.PreparedProducts.Select(p => new Product()
-			{
-				Id = p.Id,
-				BookId = p.BookId,
-				Book = _preparedBooks.FirstOrDefault(b => b.Id == p.BookId)!,
-				Comments = _preparedComments.Where(c => c.ProductId == p.Id).ToList()
+				User = UserSeeder.PreparedUsers.FirstOrDefault(u => u.Id == c.UserId)!
 			});
 		}
 
@@ -236,7 +183,18 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			//Assert
 			Assert.Equal(expected, result.Value);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RefreshDb
+			(
+				UserSeeder.Seed +
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed +
+				ProductSeeder.Seed +
+				CommentSeeder.Seed
+			);
 		}
 
 		[Fact]
@@ -285,7 +243,18 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			//Assert
 			Assert.Equal(expected, result.Value);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RefreshDb
+			(
+				UserSeeder.Seed +
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed +
+				ProductSeeder.Seed +
+				CommentSeeder.Seed
+			);
 		}
 
 		[Fact]
@@ -334,7 +303,18 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			//Assert
 			Assert.Equal(expected, result.Value);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RefreshDb
+			(
+				UserSeeder.Seed +
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed +
+				ProductSeeder.Seed +
+				CommentSeeder.Seed
+			);
 		}
 
 		private IEnumerable<ProductModel> ExpectedProducts =>
@@ -403,7 +383,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 				{
 					Id = 5,
 					Name = "The Hobbit",
-					Author = "Olha Syrenko",
+					Author = "Olha Sydenko",
 					Description = "The adventures of Bilbo Baggins in the fantastic world of Middle-earth",
 					Format = "Print",
 					Genres = "Science-Fiction",
