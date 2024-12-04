@@ -1,43 +1,28 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Tests.Integration.Fixtures;
-using Microsoft.Extensions.Configuration;
-using Supabase;
-using System.Linq;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Sdk;
+using ImpoBooks.Tests.Integration.Seeds;
 
 namespace ImpoBooks.Tests.Integration.DataTests
 {
 	[Collection("Integration Tests Collection")]
 	public class BookRepositoryTests : IClassFixture<BookSupabaseFixture>
 	{
-		private readonly Client _client;
 		private readonly BookRepository _repository;
-		private IEnumerable<Person> _preparedPersons;
 		private IEnumerable<Author> _preparedAuthors;
-		private IEnumerable<Genre> _preparedGenres;
-		private IEnumerable<Publisher> _preparedPublishers;
 		private IEnumerable<Book> _preparedBooks;
-		private IEnumerable<BookGenre> _preparedBookGenreRelations;
 
 		public BookRepositoryTests(BookSupabaseFixture fixture)
 		{
-			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedPersons = fixture.PreparedPersons;
-			_preparedAuthors = fixture.PreparedAuthors
+			_preparedAuthors = AuthorSeeder.PreparedAuthors
 				.Select(x => new Author()
 				{
 					Id = x.Id,
 					PersonId = x.PersonId,
-					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
+					Person = PersonSeeder.PreparedPersons.First(p => p.Id == x.PersonId)
 				});
-			_preparedGenres = fixture.PreparedGenres;
-			_preparedBookGenreRelations = fixture.PreparedBookGenreRelations;
-			_preparedPublishers = fixture.PreparedPublishers;
-			_preparedBooks = fixture.PreparedBooks
+			_preparedBooks = BookSeeder.PreparedBooks
 				.Select(x => new Book()
 				{
 					Id = x.Id,
@@ -49,7 +34,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = x.Price,
 					Rating = x.Rating,
 					Format = x.Format,
-					Publisher = _preparedPublishers.First(p => p.Id == x.PublisherId),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == x.PublisherId),
 					Author = _preparedAuthors.First(a => a.Id == x.AuthorId)
 				});
 		}
@@ -238,12 +223,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualBook);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -263,13 +251,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualBook);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
-			Thread.Sleep(2000);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -288,12 +278,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualBook);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -311,12 +304,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualBook);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		private IEnumerable<Book> NewBooks =>
@@ -333,7 +329,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = 12.99M,
 					PublisherId = 1,
 					AuthorId = 2,
-					Publisher = _preparedPublishers.First(p => p.Id == 1),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == 1),
 					Author = _preparedAuthors.First(a => a.Id == 2)
 				},
 				new()
@@ -347,7 +343,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = 17.99M,
 					PublisherId = 4,
 					AuthorId = 5,
-					Publisher = _preparedPublishers.First(p => p.Id == 4),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == 4),
 					Author = _preparedAuthors.First(a => a.Id == 5)
 				},
 				new()
@@ -361,7 +357,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = 21.99M,
 					PublisherId = 3,
 					AuthorId = 3,
-					Publisher = _preparedPublishers.First(p => p.Id == 3),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == 3),
 					Author = _preparedAuthors.First(a => a.Id == 3)
 				}
 			};
@@ -380,7 +376,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = 38.99M,
 					PublisherId = 2,
 					AuthorId = 1,
-					Publisher = _preparedPublishers.First(p => p.Id == 2),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == 2),
 					Author = _preparedAuthors.First(a => a.Id == 1)
 				},
 				new()
@@ -394,7 +390,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = 21.99M,
 					PublisherId = 5,
 					AuthorId = 5,
-					Publisher = _preparedPublishers.First(p => p.Id == 5),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == 5),
 					Author = _preparedAuthors.First(a => a.Id == 5)
 				},
 				new()
@@ -408,18 +404,19 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = 27.99M,
 					PublisherId = 3,
 					AuthorId = 1,
-					Publisher = _preparedPublishers.First(p => p.Id == 3),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == 3),
 					Author = _preparedAuthors.First(a => a.Id == 1)
 				}
 			};
 
 		private Book AddGenres(Book book)
 		{
-			ICollection<int> genresIds = _preparedBookGenreRelations
+			ICollection<int> genresIds = 
+				BookGenreSeeder.PreparedBookGenreRelations
 				.Where(x => x.BookId == book.Id)
 				.Select(x => x.GenreId)
 				.ToList();
-			book.Genres = _preparedGenres
+			book.Genres = GenreSeeder.PreparedGenres
 				.Where(x => genresIds.Contains(x.Id))
 				.ToList();
 			return book;
