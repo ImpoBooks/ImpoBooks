@@ -24,7 +24,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         if (registerResult.IsError)
             return Results.BadRequest(registerResult.Errors.First());
-            loginResult = await _authService.LoginAsync(registerUserRequest.Email, registerUserRequest.Password);
+        loginResult = await _authService.LoginAsync(registerUserRequest.Email, registerUserRequest.Password);
 
         string token = loginResult.Value;
         if (token is not null) AppendCookie("necessary-cookies", token);
@@ -42,7 +42,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         ErrorOr<string> result =
             await _authService.LoginAsync(loginUserRequest.Email, loginUserRequest.Password);
-        
+
         string token = result.Value;
         if (token is not null) AppendCookie("necessary-cookies", token);
 
@@ -50,6 +50,14 @@ public class AuthController(IAuthService authService) : ControllerBase
             _ => Results.Ok(),
             errors => Results.BadRequest(errors.First())
         );
+    }
+
+    [HttpPost("logout")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IResult> Login()
+    {
+        HttpContext.Response.Cookies.Delete("necessary-cookies");
+        return Results.Ok();
     }
 
     private void AppendCookie(string key, string token)
