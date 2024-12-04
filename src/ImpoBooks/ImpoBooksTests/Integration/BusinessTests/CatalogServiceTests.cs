@@ -7,13 +7,9 @@ using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Infrastructure.Errors.Catalog;
 using ImpoBooks.Tests.Integration.Fixtures;
-using Microsoft.AspNetCore.Http;
+using ImpoBooks.Tests.Integration.Seeds;
 using Supabase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ImpoBooks.Tests.Integration.BusinessTests
 {
@@ -25,17 +21,12 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		private readonly CatalogService _catalogService;
 		private readonly ProductService _productService;
 		private readonly BookSupabaseFixture _fixture;
-		private IEnumerable<Person> _preparedPersons;
 		private IEnumerable<Author> _preparedAuthors;
-		private IEnumerable<Genre> _preparedGenres;
-		private IEnumerable<Publisher> _preparedPublishers;
-		private IEnumerable<Book> _preparedBooks;
-		private IEnumerable<BookGenre> _preparedBookGenreRelations;
 
 		public CatalogServiceTests(BookSupabaseFixture fixture)
 		{
-			_fixture = fixture;
 			_client = fixture.client;
+			_fixture = fixture;
 			_repository = new(fixture.client);
 			_catalogService = new
 				(
@@ -53,31 +44,12 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 					new CommentRepository(fixture.client),
 					new UsersRepository(fixture.client)
 				);
-			_preparedPersons = fixture.PreparedPersons;
-			_preparedAuthors = fixture.PreparedAuthors
+			_preparedAuthors = AuthorSeeder.PreparedAuthors
 				.Select(x => new Author()
 				{
 					Id = x.Id,
 					PersonId = x.PersonId,
-					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
-				});
-			_preparedGenres = fixture.PreparedGenres;
-			_preparedBookGenreRelations = fixture.PreparedBookGenreRelations;
-			_preparedPublishers = fixture.PreparedPublishers;
-			_preparedBooks = fixture.PreparedBooks
-				.Select(x => new Book()
-				{
-					Id = x.Id,
-					PublisherId = x.PublisherId,
-					AuthorId = x.AuthorId,
-					Name = x.Name,
-					Description = x.Description,
-					ReleaseDate = x.ReleaseDate,
-					Price = x.Price,
-					Rating = x.Rating,
-					Format = x.Format,
-					Publisher = _preparedPublishers.First(p => p.Id == x.PublisherId),
-					Author = _preparedAuthors.First(a => a.Id == x.AuthorId)
+					Person = PersonSeeder.PreparedPersons.First(p => p.Id == x.PersonId)
 				});
 		}
 
@@ -109,12 +81,15 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.True(result.IsError);
 			Assert.Equal(CatalogErrors.BooksNotFound, result.FirstError);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Fact]
@@ -158,14 +133,22 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.True(result.IsError);
 			Assert.Equal(CatalogErrors.GenresNotFound, result.FirstError);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Fact]
 		public async Task GetGenresAsync_ReturnCorrectResult()
 		{
 			//Arrang
-			IEnumerable<GenreModel> expected = _preparedGenres.Select(g => g.ToGenreModel());
+			IEnumerable<GenreModel> expected = GenreSeeder.PreparedGenres.Select(g => g.ToGenreModel());
 
 			//Act
 			ErrorOr<IEnumerable<GenreModel>> result = await _catalogService.GetGenresAsync();
@@ -187,9 +170,15 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.True(result.IsError);
 			Assert.Equal(CatalogErrors.AuthorsNotFound, result.FirstError);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Fact]
@@ -253,12 +242,15 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.Equal(expected, result.Value);
 			Assert.NotNull(product.Value);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Fact]
@@ -308,12 +300,15 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			//Assert
 			Assert.Equal(expected, result.Value);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Fact]
@@ -362,12 +357,15 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			Assert.Equal(Result.Success, result.Value);
 			Assert.Equal(booksCountBeforeDel - 1, booksCountAfterDel);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		private IEnumerable<BookModel> PreparedBooks =>
