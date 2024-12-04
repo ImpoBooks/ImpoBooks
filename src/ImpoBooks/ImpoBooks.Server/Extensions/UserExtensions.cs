@@ -22,6 +22,16 @@ public static class UserExtensions
         };
     }
 
+    public static User? ToEntity(this UpdateUserRequest request)
+    {
+        return new User
+        {
+            Name = request.Name,
+            HashedPassword = _passwordHasher.Generate(request.Password),
+            RoleId = 2, //Customer role
+        };
+    }
+
     public static void AddApiAuthentication(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

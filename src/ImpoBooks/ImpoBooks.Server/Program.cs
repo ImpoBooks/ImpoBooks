@@ -1,4 +1,5 @@
 using ImpoBooks.BusinessLogic.Extensions;
+using ImpoBooks.BusinessLogic.Services;
 using ImpoBooks.BusinessLogic.Services.Auth;
 using ImpoBooks.BusinessLogic.Services.Cart;
 using ImpoBooks.BusinessLogic.Services.Catalog;
@@ -22,6 +23,7 @@ public class Program
         builder.Services.AddRepository();
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IUsersRepository, UsersRepository>();
+        builder.Services.AddSingleton<IUsersService, UsersService>();
         builder.Services.AddSingleton<ICatalogService, CatalogService>();
         builder.Services.AddSingleton<IProductService, ProductService>();
 		builder.Services.AddSingleton<ICartService, CartService>();
