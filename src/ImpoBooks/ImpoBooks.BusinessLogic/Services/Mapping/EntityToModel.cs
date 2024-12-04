@@ -72,5 +72,23 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				Comments = source.Comments.Select(c => c.ToCommentModel())
 			};
 		}
+
+		public static OrderCheckModel ToOrderCheckModel(this Order source)
+		{
+			return new OrderCheckModel()
+			{
+				OrderCode = source.OrderCode,
+				CreatedAt =	source.CreatedAt,
+				FirstName = source.FirstName,
+				LastName = source.LastName,
+				Email = source.Email,
+				Address = source.Address,
+				City = source.City,
+				ZipCode = source.ZipCode,
+				Country = source.Country,
+				TotalSum = source.TotalSum,
+				ExpensesList = source.ExpensesList
+			};
+		}
 	}
 }
