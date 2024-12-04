@@ -16,4 +16,10 @@ public class UsersRepository(Client client) : Repository<User, AutoIncUser>(clie
         User user = response.Model;
         return user;
     }
+    
+    public async Task<User> UpdateAsync(User user)
+    {
+        ModeledResponse<User> response = await _client.From<User>().Update(user);
+        return response.Model;
+    }
 }
