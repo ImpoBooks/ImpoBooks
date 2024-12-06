@@ -10,7 +10,7 @@ namespace ImpoBooks.Server.Requests
 		[Required] public string Publisher { get; set; }
 		[Required] public string ReleaseDate { get; set; }
 		[Required] public string Description { get; set; }
-		[Required] public string Image { get; set; }
+		[Required] public string ImageUrl { get; set; }
 		[Required] public decimal Price { get; set; }
 	}
 }

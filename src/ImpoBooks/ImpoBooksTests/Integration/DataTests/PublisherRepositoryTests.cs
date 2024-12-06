@@ -1,36 +1,18 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Tests.Integration.Fixtures;
-using Microsoft.Extensions.Configuration;
-using Supabase;
-using System.Linq;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Sdk;
+using ImpoBooks.Tests.Integration.Seeds;
 
 namespace ImpoBooks.Tests.Integration.DataTests
 {
 	[Collection("Integration Tests Collection")]
 	public class PublisherRepositoryTests : IClassFixture<PublisherSupabaseFixture>
 	{
-		private readonly Client _client;
 		private readonly PublisherRepository _repository;
-		private IEnumerable<Person> _preparedPersons;
-		private IEnumerable<Author> _preparedAuthors;
-		private IEnumerable<Genre> _preparedGenres;
-		private IEnumerable<Publisher> _preparedPublishers;
-		private IEnumerable<Book> _preparedBooks;
-
 
 		public PublisherRepositoryTests(PublisherSupabaseFixture fixture)
 		{
-			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedPublishers = fixture.PreparedPublishers;
-			_preparedBooks = fixture.PreparedBooks;
-			_preparedAuthors = fixture.PreparedAuthors;
-			_preparedPersons = fixture.PreparedPersons;
-			_preparedGenres = fixture.PreparedGenres;
 		}
 
 		[Theory]
@@ -42,8 +24,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetByIdAsync_ReturnExpectedPublisher(int Id)
 		{
 			//Arrange
-			Publisher expected = _preparedPublishers.FirstOrDefault(x => x.Id == Id)!;
-			expected.Books = _preparedBooks.Where(x => x.PublisherId == Id).ToList();
+			Publisher expected = PublisherSeeder.PreparedPublishers.FirstOrDefault(x => x.Id == Id)!;
+			expected.Books = BookSeeder.PreparedBooks.Where(x => x.PublisherId == Id).ToList();
 
 			//Act
 			Publisher publisher = await _repository.GetByIdAsync(expected.Id);
@@ -59,8 +41,8 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetByNameAsync_ReturnExpectedPublisher(string name)
 		{
 			//Arrange
-			Publisher expected = _preparedPublishers.FirstOrDefault(x => x.Name == name)!;
-			expected.Books = _preparedBooks.Where(x => x.PublisherId == expected.Id).ToList();
+			Publisher expected = PublisherSeeder.PreparedPublishers.FirstOrDefault(x => x.Name == name)!;
+			expected.Books = BookSeeder.PreparedBooks.Where(x => x.PublisherId == expected.Id).ToList();
 
 			//Act
 			Publisher publisher = await _repository.GetByNameAsync(name);
@@ -73,7 +55,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetAllAsync_ReturnExpectedPublishersAmount()
 		{
 			//Arrange
-			int expected = _preparedPublishers.Count();
+			int expected = PublisherSeeder.PreparedPublishers.Count();
 
 			//Act
 			IEnumerable<Publisher> publishers = await _repository.GetAllAsync();
@@ -86,12 +68,12 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetAllAsync_ReturnExpectedPublishersContent()
 		{
 			//Arrange
-			IEnumerable<Publisher> expected = _preparedPublishers;
+			IEnumerable<Publisher> expected = PublisherSeeder.PreparedPublishers;
 			expected = expected.Select(x => new Publisher()
 			{
 				Id = x.Id,
 				Name = x.Name,
-				Books = _preparedBooks.Where(b => b.PublisherId == x.Id).ToList()
+				Books = BookSeeder.PreparedBooks.Where(b => b.PublisherId == x.Id).ToList()
 			});
 
 			//Act
@@ -117,12 +99,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualPublisher);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -136,18 +121,21 @@ namespace ImpoBooks.Tests.Integration.DataTests
 
 			//Act
 			await _repository.UpdateAsync(expected);
-			expected.Books = _preparedBooks.Where(x => x.PublisherId == caseId).ToList();
+			expected.Books = BookSeeder.PreparedBooks.Where(x => x.PublisherId == caseId).ToList();
 			Publisher actualPublisher = await _repository.GetByIdAsync(caseId);
 
 			//Assert
 			Assert.Equal(expected, actualPublisher);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			Thread.Sleep(2000);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -157,7 +145,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task DeleteAsync_RemovePublisherFromDb(int caseId)
 		{
 			//Arrange
-			Publisher publisher = _preparedPublishers.FirstOrDefault(x => x.Id == caseId)!;
+			Publisher publisher = PublisherSeeder.PreparedPublishers.FirstOrDefault(x => x.Id == caseId)!;
 
 			//Act
 			await _repository.DeleteAsync(publisher);
@@ -166,11 +154,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualPublisher);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -188,11 +180,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualPublisher);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		private IEnumerable<Publisher> NewPublishers =>

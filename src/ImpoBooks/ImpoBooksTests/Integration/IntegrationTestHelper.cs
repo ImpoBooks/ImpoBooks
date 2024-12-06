@@ -1,13 +1,8 @@
 ﻿using ImpoBooks.DataAccess.Entities;
-using ImpoBooks.DataAccess.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 using Supabase;
 using Supabase.Postgrest.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImpoBooks.Tests.Integration
 {
@@ -70,5 +65,46 @@ namespace ImpoBooks.Tests.Integration
 			}
 		}
 
+		public async static Task<NpgsqlConnection> ConnectToDb()
+		{
+			var configuration = ConfigurationSetup();
+
+			var connection = new NpgsqlConnection(configuration["ConnectionStrings:Test"]);
+			await connection.OpenAsync();
+
+			return connection;
+		}
+
+		public static async Task ClearDb()
+		{
+			var connection = await ConnectToDb();
+
+			var command = new NpgsqlCommand("TRUNCATE TABLE \"Persons\", \"Publishers\", \"Users\", \"Genres\", \"Orders\" CASCADE", connection);
+			command.CommandType = System.Data.CommandType.Text;
+
+			await command.ExecuteNonQueryAsync();
+
+			command.Dispose();
+			await connection.CloseAsync();
+		}
+
+
+		public static async Task AddRecordToDb(string query)
+		{
+			using var connection = await ConnectToDb();
+
+			using var command = new NpgsqlCommand(query, connection);
+			command.CommandType = System.Data.CommandType.Text;
+			await command.ExecuteNonQueryAsync();
+
+			command.Dispose();
+			await connection.CloseAsync();
+		}
+
+		public async static Task RefreshDb(string query)
+		{
+			await ClearDb();
+			await AddRecordToDb(query);
+		}
 	}
 }

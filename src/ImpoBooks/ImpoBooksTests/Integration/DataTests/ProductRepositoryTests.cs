@@ -1,51 +1,30 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Tests.Integration.Fixtures;
-using Microsoft.Extensions.Configuration;
-using Supabase;
-using System.Linq;
-using System.Net;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Sdk;
+using ImpoBooks.Tests.Integration.Seeds;
 
 namespace ImpoBooks.Tests.Integration.DataTests
 {
 	[Collection("Integration Tests Collection")]
 	public class ProductRepositoryTests : IClassFixture<ProductSupabaseFixture>
 	{
-		private readonly ProductSupabaseFixture _fixture;
-		private readonly Client _client;
 		private readonly ProductRepository _repository;
-		private IEnumerable<Person> _preparedPersons;
 		private IEnumerable<Author> _preparedAuthors;
-		private IEnumerable<Genre> _preparedGenres;
-		private IEnumerable<Publisher> _preparedPublishers;
 		private IEnumerable<Book> _preparedBooks;
-		private IEnumerable<BookGenre> _preparedBookGenreRelations;
-		private IEnumerable<User> _preparedUsers;
 		private IEnumerable<Comment> _preparedComments;
 		private IEnumerable<Product> _preparedProducts;
 
-
-
 		public ProductRepositoryTests(ProductSupabaseFixture fixture)
 		{
-			_fixture = fixture;
-			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedPersons = fixture.PreparedPersons;
-			_preparedAuthors = fixture.PreparedAuthors
+			_preparedAuthors = AuthorSeeder.PreparedAuthors
 				.Select(x => new Author()
 				{
 					Id = x.Id,
 					PersonId = x.PersonId,
-					Person = fixture.PreparedPersons.First(p => p.Id == x.PersonId)
+					Person = PersonSeeder.PreparedPersons.First(p => p.Id == x.PersonId)
 				});
-			_preparedGenres = fixture.PreparedGenres;
-			_preparedBookGenreRelations = fixture.PreparedBookGenreRelations;
-			_preparedPublishers = fixture.PreparedPublishers;
-			_preparedBooks = fixture.PreparedBooks
+			_preparedBooks = BookSeeder.PreparedBooks
 				.Select(x => new Book()
 				{
 					Id = x.Id,
@@ -57,11 +36,10 @@ namespace ImpoBooks.Tests.Integration.DataTests
 					Price = x.Price,
 					Rating = x.Rating,
 					Format = x.Format,
-					Publisher = _preparedPublishers.First(p => p.Id == x.PublisherId),
+					Publisher = PublisherSeeder.PreparedPublishers.First(p => p.Id == x.PublisherId),
 					Author = _preparedAuthors.First(a => a.Id == x.AuthorId)
 				});
-			_preparedUsers = fixture.PreparedUsers;
-			_preparedComments = fixture.PreparedComments.Select(c => new Comment
+			_preparedComments = CommentSeeder.PreparedComments.Select(c => new Comment
 			{
 				Id = c.Id,
 				UserId = c.UserId,
@@ -70,9 +48,9 @@ namespace ImpoBooks.Tests.Integration.DataTests
 				LikesNumber = c.LikesNumber,
 				DislikesNumber = c.DislikesNumber,
 				Rating = c.Rating,
-				User = _preparedUsers.FirstOrDefault(u => u.Id == c.UserId)!
+				User = UserSeeder.PreparedUsers.FirstOrDefault(u => u.Id == c.UserId)!
 			});
-			_preparedProducts = fixture.PreparedProducts.Select(p => new Product()
+			_preparedProducts = ProductSeeder.PreparedProducts.Select(p => new Product()
 			{
 				Id = p.Id,
 				BookId = p.BookId,
@@ -168,15 +146,18 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actuaProduct);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedUsers);
-			await IntegrationTestHelper.RecreateTable(_client, _fixture.PreparedProducts);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedComments);
+			await IntegrationTestHelper.RefreshDb
+			(
+				UserSeeder.Seed +
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed +
+				ProductSeeder.Seed +
+				CommentSeeder.Seed
+			);
 		}
 
 		private IEnumerable<Product> NewProducts =>
@@ -189,11 +170,12 @@ namespace ImpoBooks.Tests.Integration.DataTests
 
 		private Book AddGenres(Book book)
 		{
-			ICollection<int> genresIds = _preparedBookGenreRelations
+			ICollection<int> genresIds = 
+				BookGenreSeeder.PreparedBookGenreRelations
 				.Where(x => x.BookId == book.Id)
 				.Select(x => x.GenreId)
 				.ToList();
-			book.Genres = _preparedGenres
+			book.Genres = GenreSeeder.PreparedGenres
 				.Where(x => genresIds.Contains(x.Id))
 				.ToList();
 			return book;

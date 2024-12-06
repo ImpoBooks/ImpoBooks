@@ -18,8 +18,10 @@ namespace ImpoBooks.DataAccess.Entities.AutoIncremented
 		[Column("price")] public decimal Price { get; set; }
 		[Column("rating")] public decimal Rating { get; set; }
 		[Column("format")] public string Format { get; set; }
+		[Column("image_url")] public string ImageUrl { get; set; }
 		[Reference(typeof(Publisher))] public Publisher Publisher { get; set; }
 		[Reference(typeof(Author))] public Author Author { get; set; }
 		[Column("genres")] public ICollection<Genre>? Genres { get; set; }
+
 	}
 }

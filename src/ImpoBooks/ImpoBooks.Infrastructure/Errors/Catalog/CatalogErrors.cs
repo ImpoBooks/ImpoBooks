@@ -13,6 +13,10 @@ namespace ImpoBooks.Infrastructure.Errors.Catalog
 			Error.Custom(ErrorTypes.WrongInfo, "Book.Id.WrongInfo", "Book id was equal to zero.");
 		public static Error BooksNotFound =>
 			Error.Custom(ErrorTypes.NotFound, "Books.NotFound", "Failed to get books.");
+		public static Error GenresNotFound =>
+			Error.Custom(ErrorTypes.NotFound, "Genres.NotFound", "Failed to get genres.");
+		public static Error AuthorsNotFound =>
+			Error.Custom(ErrorTypes.NotFound, "Authors.NotFound", "Failed to get authors.");
 		public static Error BookNotFound =>
 			Error.Custom(ErrorTypes.NotFound, "Book.NotFound", "Failed to get book.");
 		public static Error NoBookMatches =>

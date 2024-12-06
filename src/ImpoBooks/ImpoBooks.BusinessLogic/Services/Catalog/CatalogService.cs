@@ -81,7 +81,8 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 				ReleaseDate = book.ReleaseDate,
 				Price = book.Price,
 				Rating = book.Rating,
-				Format = "Electronic"
+				Format = "Electronic",
+				ImageUrl = book.ImageUrl
 			});
 
 			dbBook = await _bookRepository.GetByNameAsync(book.Name);
@@ -142,7 +143,25 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 			return Result.Success;
 		}
 
+		public async Task<ErrorOr<IEnumerable<GenreModel>>> GetGenresAsync()
+		{
+			IEnumerable<Genre> dbGenres = await _genreRepository.GetAllAsync();
+			if (dbGenres.IsNullOrEmpty())
+				return CatalogErrors.GenresNotFound;
 
+			IEnumerable<GenreModel> result = dbGenres.Select(g => g.ToGenreModel());
+			return result.ToErrorOr();
+		}
+
+		public async Task<ErrorOr<IEnumerable<AuthorModel>>> GetAuthorsAsync()
+		{
+			IEnumerable<Author> dbAuthors = await _authorRepository.GetAllAsync();
+			if (dbAuthors.IsNullOrEmpty())
+				return CatalogErrors.AuthorsNotFound;
+
+			IEnumerable<AuthorModel> result = dbAuthors.Select(g => g.ToAuthorModel());
+			return result.ToErrorOr();
+		}
 
 		private async Task<Author> GetOrCreateAuthorAsync(BookModel bookModel)
 		{
@@ -165,6 +184,7 @@ namespace ImpoBooks.BusinessLogic.Services.Catalog
 			if (!bookModel.Name.IsNullOrEmpty()) target.Name = bookModel.Name;
 			if (!bookModel.Description.IsNullOrEmpty()) target.Description = bookModel.Description;
 			if (!bookModel.ReleaseDate.IsNullOrEmpty()) target.ReleaseDate = bookModel.ReleaseDate;
+			if (!bookModel.ImageUrl.IsNullOrEmpty()) target.ImageUrl = bookModel.ImageUrl;
 			if (bookModel.Price != 0) target.Price = bookModel.Price;
 			if (bookModel.Rating != 0) target.Rating = bookModel.Rating;
 			target.AuthorId = author.Id;

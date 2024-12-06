@@ -1,6 +1,7 @@
 using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Tests.Integration.Fixtures;
+using ImpoBooks.Tests.Integration.Seeds;
 using Microsoft.Extensions.Configuration;
 using Supabase;
 using System.Linq;
@@ -13,24 +14,11 @@ namespace ImpoBooks.Tests.Integration.DataTests
 	[Collection("Integration Tests Collection")]
 	public class GenreRepositoryTests : IClassFixture<GenreSupabaseFixture>
 	{
-		private readonly Client _client;
 		private readonly GenreRepository _repository;
-		private IEnumerable<Person> _preparedPersons;
-		private IEnumerable<Author> _preparedAuthors;
-		private IEnumerable<Genre> _preparedGenres;
-		private IEnumerable<Publisher> _preparedPublishers;
-		private IEnumerable<Book> _preparedBooks;
-		private IEnumerable<BookGenre> _preparedBookGenreRelations;
+
 		public GenreRepositoryTests(GenreSupabaseFixture fixture)
 		{
-			_client = fixture.client;
 			_repository = new(fixture.client);
-			_preparedGenres = fixture.PreparedGenres;
-			_preparedPersons = fixture.PreparedPersons;
-			_preparedAuthors = fixture.PreparedAuthors;
-			_preparedPublishers = fixture.PreparedPublishers;
-			_preparedBooks = fixture.PreparedBooks;
-			_preparedBookGenreRelations = fixture.PreparedBookGenreRelations;
 		}
 
 		[Theory]
@@ -42,7 +30,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetByIdAsync_ReturnExpectedGenre(int Id)
 		{
 			//Arrange
-			Genre expected = _preparedGenres.FirstOrDefault(x => x.Id == Id)!;
+			Genre expected = GenreSeeder.PreparedGenres.FirstOrDefault(x => x.Id == Id)!;
 			expected = AddBooks(expected);
 
 			//Act
@@ -59,7 +47,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetByNameAsync_ReturnExpectedGenre(string name)
 		{
 			//Arrange
-			Genre expected = _preparedGenres.FirstOrDefault(x => x.Name == name)!;
+			Genre expected = GenreSeeder.PreparedGenres.FirstOrDefault(x => x.Name == name)!;
 			expected = AddBooks(expected);
 
 			//Act
@@ -73,7 +61,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetAllAsync_ReturnExpectedGenresAmount()
 		{
 			//Arrange
-			int expected = _preparedGenres.Count();
+			int expected = GenreSeeder.PreparedGenres.Count();
 
 			//Act
 			IEnumerable<Genre> genres = await _repository.GetAllAsync();
@@ -86,7 +74,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task GetAllAsync_ReturnExpectedGenresContent()
 		{
 			//Arrange
-			IEnumerable<Genre> expected = _preparedGenres;
+			IEnumerable<Genre> expected = GenreSeeder.PreparedGenres;
 			expected = expected.Select(x => AddBooks(x));
 
 			//Act
@@ -113,12 +101,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualGenre);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed +
+				PublisherSeeder.Seed +
+				GenreSeeder.Seed +
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -138,13 +129,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Equal(expected, actualGenre);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
-			Thread.Sleep(2000);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -154,7 +147,7 @@ namespace ImpoBooks.Tests.Integration.DataTests
 		public async Task DeleteAsync_RemoveGenreFromDb(int caseId)
 		{
 			//Arrange
-			Genre genre = _preparedGenres.FirstOrDefault(x => x.Id == caseId)!;
+			Genre genre = GenreSeeder.PreparedGenres.FirstOrDefault(x => x.Id == caseId)!;
 
 			//Actgi
 			await _repository.DeleteAsync(genre);
@@ -163,12 +156,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualGenre);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		[Theory]
@@ -186,12 +182,15 @@ namespace ImpoBooks.Tests.Integration.DataTests
 			//Assert
 			Assert.Null(actualGenre);
 
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPublishers);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedGenres);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedPersons);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedAuthors);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBooks);
-			await IntegrationTestHelper.RecreateTable(_client, _preparedBookGenreRelations);
+			await IntegrationTestHelper.RefreshDb
+			(
+				PersonSeeder.Seed +
+				AuthorSeeder.Seed + 
+				PublisherSeeder.Seed + 
+				GenreSeeder.Seed + 
+				BookSeeder.Seed +
+				BookGenreSeeder.Seed
+			);
 		}
 
 		private IEnumerable<Genre> NewGenres =>
@@ -212,11 +211,12 @@ namespace ImpoBooks.Tests.Integration.DataTests
 
 		private Genre AddBooks(Genre genre)
 		{
-			ICollection<int> bookIds = _preparedBookGenreRelations
+			ICollection<int> bookIds = 
+				BookGenreSeeder.PreparedBookGenreRelations
 				.Where(x => x.GenreId == genre.Id)
 				.Select(x => x.BookId)
 				.ToList();
-			genre.Books = _preparedBooks
+			genre.Books = BookSeeder.PreparedBooks
 				.Where(x => bookIds.Contains(x.Id))
 				.ToList();
 			return genre;

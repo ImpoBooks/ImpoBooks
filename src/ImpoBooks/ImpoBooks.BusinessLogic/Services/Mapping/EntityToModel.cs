@@ -31,6 +31,7 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				ReleaseDate = source.ReleaseDate,
 				Rating = source.Rating,
 				Price = source.Price,
+				ImageUrl = source.ImageUrl
 			};
 		}
 
@@ -69,6 +70,7 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				ReleaseDate = source.Book.ReleaseDate,
 				Rating = source.Book.Rating,
 				Price = source.Book.Price,
+				ImageUrl = source.Book.ImageUrl,
 				Comments = source.Comments.Select(c => c.ToCommentModel())
 			};
 		}
@@ -88,6 +90,27 @@ namespace ImpoBooks.BusinessLogic.Services.Mapping
 				Country = source.Country,
 				TotalSum = source.TotalSum,
 				ExpensesList = source.ExpensesList
+			};
+		}
+
+		public static GenreModel ToGenreModel(this Genre source)
+		{
+			return new GenreModel()
+			{
+				Name = source.Name
+			};
+		}
+
+		public static AuthorModel ToAuthorModel(this Author source)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append(source.Person.Name)
+				.Append(" ")
+				.Append(source.Person.Surname);
+
+			return new AuthorModel()
+			{
+				Name = sb.ToString()
 			};
 		}
 	}

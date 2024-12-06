@@ -5,6 +5,7 @@ using ImpoBooks.DataAccess.Entities;
 using ImpoBooks.DataAccess.Repositories;
 using ImpoBooks.Infrastructure.Errors.Cart;
 using ImpoBooks.Tests.Integration.Fixtures;
+using ImpoBooks.Tests.Integration.Seeds;
 using Supabase;
 
 namespace ImpoBooks.Tests.Integration.BusinessTests
@@ -13,11 +14,9 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 	public class CartServiceTests : IClassFixture<CartSupabaseFixture>
 	{
 		private readonly CartService _cartService;
-		private readonly List<OrderModel> _preparedOrderModels;
 
 		public CartServiceTests(CartSupabaseFixture fixture)
 		{
-			_preparedOrderModels = fixture.PreparedOrderModels;
 			_cartService = new
 				(
 					new BookRepository(fixture.client),
@@ -46,7 +45,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 			IEnumerable<OrderProductModel> products = new OrderProductModel[]
 			{
 				new() { Id = 1, Count = 8 },
-				new() { Id = 5, Count = 3 },
+				new() { Id = 50, Count = 3 },
 			};
 
 			//Act
@@ -132,7 +131,7 @@ namespace ImpoBooks.Tests.Integration.BusinessTests
 		public async Task SaveOrderAsync_ReturnExpectedResult(int caseId )
 		{
 			//Arrang
-			OrderModel orderModel = _preparedOrderModels[caseId];
+			OrderModel orderModel = CartSeeder.PreparedOrderModels[caseId];
 			OrderCheckModel expected = ExpectedOrders[caseId];
 			expected.OrderCode = _cartService.GenerateOrderCode(orderModel);
 
